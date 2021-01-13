@@ -41,9 +41,9 @@ class QpNode (models.Model):
     children_count = models.IntegerField() 
 
 class QpNodeAdjList(models.Model):
-     
-    parentNode = models.ForeignKey (QpNode, on_delete = models.CASCADE) 
-    childNode = models.ForeignKey (QpNode, on_delete = models.CASCADE) 
+
+    parentNode = models.ForeignKey (QpNode, on_delete = models.CASCADE)  
+    childNode = models.ForeignKey (QpNode, on_delete = models.CASCADE, related_name='QpdNodeToChild') 
 
 class GradeNode (QpNode):
 
@@ -58,4 +58,4 @@ class GradeNode (QpNode):
 class GradeNodeAdjList (models.Model): 
 
     parentNode = models.ForeignKey (GradeNode, on_delete = models.CASCADE) 
-    childNode = models.ForeignKey (GradeNode, on_delete = models.CASCADE) 
+    childNode = models.ForeignKey (GradeNode, on_delete = models.CASCADE, related_name='GradeNodeToChild')  
