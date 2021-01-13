@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'api.apps.ApiConfig',
     'assisted_grading.apps.AssistedGradingConfig',
     'django.contrib.admin',
     'django.contrib.auth',
