@@ -5,8 +5,9 @@ from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from itertools import chain
 
-from .serializers import CourseSerializer, TestSerializer, UserSerializer
+from .serializers import CourseSerializer, TestSerializer, UserSerializer, ProfessorSerializer
 from .models import Course, Professor, Test
 
 
@@ -25,8 +26,6 @@ class UserLoginView(viewsets.ModelViewSet):
     queryset = User.objects.all()
 
     def create(self, request):
-        serializer_class = UserSerializer
-        queryset = User.objects.all()
         user = authenticate(
             username=request.POST['username'], password=request.POST['password'])
         if user is not None:
@@ -36,6 +35,20 @@ class UserLoginView(viewsets.ModelViewSet):
         else:
             return Response("Login Failed")
             # return HttpResponse("Failed")
+
+class UserSignupView(viewsets.ModelViewSet):
+    serializer_class = ProfessorSerializer
+    queryset = Professor.objects.all() #none
+    def create(self,request):
+        username = request.GET['username']
+        password = request.GET['password']
+        name = request.GET['name']
+        department = request.GET['department']
+        user = User(username=username, password=password)
+        user.save()
+        prof = Professor(user=user,  name=name)
+        prof.save()
+        return Response(ProfessorSerializer(prof).data)
 
 # Create your views here.
 
@@ -48,18 +61,18 @@ def index(request):
     return HttpResponse("Hello, world. You're at the api index.")
 
 
-@api_view(['POST'])
-def signup(request):
-    if request.method == 'POST':
-        username = request.GET['username']
-        password = request.GET['password']
-        name = request.GET['name']
-        department = request.GET['department']
-        user = User(username=username, password=password)
-        user.save()
-        prof = Professor(user=user,  name=name)
-        prof.save()
-        return Response(ProfessorSerializer(prof).data)
+# @api_view(['POST'])
+# def userSignup(request):
+#     if request.method == 'POST':
+#         username = request.GET['username']
+#         password = request.GET['password']
+#         name = request.GET['name']
+#         department = request.GET['department']
+#         user = User(username=username, password=password)
+#         user.save()
+#         prof = Professor(user=user,  name=name)
+#         prof.save()
+#         return Response(ProfessorSerializer(prof).data)
 
     # def userLogin(request):
     #     user = authenticate(
