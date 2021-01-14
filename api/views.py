@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from rest_framework import viewsets
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .serializers import CourseSerializer, TestSerializer, UserSerializer
@@ -39,7 +40,7 @@ class UserLoginView(viewsets.ModelViewSet):
 # Create your views here.
 
 
-class ProfessorView():
+class ProfessorView(viewsets.ModelViewSet):
     pass
 
 
@@ -47,14 +48,27 @@ def index(request):
     return HttpResponse("Hello, world. You're at the api index.")
 
 
-# def userLogin(request):
-#     user = authenticate(
-#         username=request.GET['username'], password=request.GET['password'])
-#     if user is not None:
-#         login(request, user)
-#         return HttpResponse("Hey "+request.GET['username'])
-#     else:
-#         return HttpResponse("Failed")
+@api_view(['POST'])
+def signup(request):
+    if request.method == 'POST':
+        username = request.GET['username']
+        password = request.GET['password']
+        name = request.GET['name']
+        department = request.GET['department']
+        user = User(username=username, password=password)
+        user.save()
+        prof = Professor(user=user,  name=name)
+        prof.save()
+        return Response(ProfessorSerializer(prof).data)
+
+    # def userLogin(request):
+    #     user = authenticate(
+    #         username=request.GET['username'], password=request.GET['password'])
+    #     if user is not None:
+    #         login(request, user)
+    #         return HttpResponse("Hey "+request.GET['username'])
+    #     else:
+    #         return HttpResponse("Failed")
 
 
 def getCourses(request):
