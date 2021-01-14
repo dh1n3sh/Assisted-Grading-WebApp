@@ -36,22 +36,6 @@ class UserLoginView(viewsets.ModelViewSet):
             return Response("Login Failed")
             # return HttpResponse("Failed")
 
-class UserSignupView(viewsets.ModelViewSet):
-    serializer_class = ProfessorSerializer
-    queryset = Professor.objects.all() #none
-    def create(self,request):
-        username = request.GET['username']
-        password = request.GET['password']
-        name = request.GET['name']
-        department = request.GET['department']
-        user = User(username=username, password=password)
-        user.save()
-        prof = Professor(user=user,  name=name)
-        prof.save()
-        return Response(ProfessorSerializer(prof).data)
-
-# Create your views here.
-
 
 class ProfessorView(viewsets.ModelViewSet):
     pass
@@ -60,7 +44,10 @@ class ProfessorView(viewsets.ModelViewSet):
 def index(request):
     return HttpResponse("Hello, world. You're at the api index.")
 
-class signup(viewsets.ModelViewSet):
+
+class SignupView(viewsets.ModelViewSet):
+    http_method_names = ['post']
+
     serializer_class = ProfessorSerializer
     queryset = Professor.objects.all()
 
@@ -80,13 +67,3 @@ class signup(viewsets.ModelViewSet):
             prof = Professor(user=user,  name=name)
             prof.save()
             return Response(ProfessorSerializer(prof).data)
-
-
-
-def getCourses(request):
-
-    # print(request.user)
-    # prof = request.GET['user']
-    # print(prof)
-
-    return HttpResponse(request.user.professor.name)
