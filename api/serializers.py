@@ -19,10 +19,13 @@ class TestSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'password')
+        fields = ('id', 'username', 'password', 'email')
 
 
 class ProfessorSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
     class Meta:
         model = Professor
-        fields = ('id', 'name', 'department')
+        fields = ('id', 'name', 'department', 'user')
+        # depth = 2

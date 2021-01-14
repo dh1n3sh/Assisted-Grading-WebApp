@@ -60,28 +60,27 @@ class ProfessorView(viewsets.ModelViewSet):
 def index(request):
     return HttpResponse("Hello, world. You're at the api index.")
 
+class signup(viewsets.ModelViewSet):
+    serializer_class = ProfessorSerializer
+    queryset = Professor.objects.all()
 
-# @api_view(['POST'])
-# def userSignup(request):
-#     if request.method == 'POST':
-#         username = request.GET['username']
-#         password = request.GET['password']
-#         name = request.GET['name']
-#         department = request.GET['department']
-#         user = User(username=username, password=password)
-#         user.save()
-#         prof = Professor(user=user,  name=name)
-#         prof.save()
-#         return Response(ProfessorSerializer(prof).data)
+    def create(self, request):
+        # print()
+        if request.method == 'POST':
+            # return Response(request.POST.items())
+            username = request.POST['user.username']
+            password = request.POST['user.password']
+            email = request.POST['user.email']
 
-    # def userLogin(request):
-    #     user = authenticate(
-    #         username=request.GET['username'], password=request.GET['password'])
-    #     if user is not None:
-    #         login(request, user)
-    #         return HttpResponse("Hey "+request.GET['username'])
-    #     else:
-    #         return HttpResponse("Failed")
+            name = request.POST['name']
+            department = request.POST['department']
+            user = User.objects.create_user(
+                username=username, email=email, password=password)
+            user.save()
+            prof = Professor(user=user,  name=name)
+            prof.save()
+            return Response(ProfessorSerializer(prof).data)
+
 
 
 def getCourses(request):
