@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from rest_framework import viewsets
+from rest_framework.response import Response
 
 from .serializers import CourseSerializer, TestSerializer, UserSerializer
 from .models import Course, Professor, Test
@@ -17,21 +18,29 @@ class TestView(viewsets.ModelViewSet):
     serializer_class = TestSerializer
     queryset = Test.objects.all()
 
+
 class UserLoginView(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    def create(self,request):
-        serializer_class = UserSerializer                                                                                               
+
+    def create(self, request):
+        serializer_class = UserSerializer
         queryset = User.objects.all()
         user = authenticate(
-        username=request.POST['username'], password=request.POST['password'])
-        if user is not None:    
+            username=request.POST['username'], password=request.POST['password'])
+        if user is not None:
             login(request, user)
-            return HttpResponse("Hey "+user.username)
+            return Response(UserSerializer(user).data)
+            # return HttpResponse("Hey "+user.username)
         else:
-            return HttpResponse("Failed")
+            return Response("Login Failed")
+            # return HttpResponse("Failed")
 
 # Create your views here.
+
+
+class ProfessorView():
+    pass
 
 
 def index(request):

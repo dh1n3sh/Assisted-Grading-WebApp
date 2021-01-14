@@ -21,11 +21,12 @@ from api import views
 router = routers.DefaultRouter()
 router.register(r'courses', views.CourseView, 'course')
 router.register(r'tests', views.TestView, 'test')
-router.register(r'login',views.UserLoginView,'login')
+router.register(r'login', views.UserLoginView, 'login')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('api/', include('api.urls')),
     path('grading/', include('assisted_grading.urls')),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls')),
 ]
