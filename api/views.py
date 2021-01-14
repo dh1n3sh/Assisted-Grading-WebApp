@@ -68,3 +68,4 @@ class SignupView(viewsets.ModelViewSet):
             prof = Professor(user=user,  name=name)
             prof.save()
             return Response(ProfessorSerializer(prof).data)
+# endd
