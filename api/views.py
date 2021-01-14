@@ -1,10 +1,24 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Course, Professor
 from django.contrib.auth import authenticate, login
+from rest_framework import viewsets
 
+from .serializers import CourseSerializer, TestSerializer
+from .models import Course, Professor, Test
+
+
+class CourseView(viewsets.ModelViewSet):
+    serializer_class = CourseSerializer
+    queryset = Course.objects.all()
+
+
+class TestView(viewsets.ModelViewSet):
+    serializer_class = TestSerializer
+    queryset = Test.objects.all()
 
 # Create your views here.
+
+
 def index(request):
     return HttpResponse("Hello, world. You're at the api index.")
 

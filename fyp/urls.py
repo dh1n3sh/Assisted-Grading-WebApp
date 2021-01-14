@@ -15,9 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework import routers
+from api import views
+
+router = routers.DefaultRouter()
+router.register(r'courses', views.CourseView, 'course')
+router.register(r'tests', views.TestView, 'test')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
-    path('grading/', include('assisted_grading.urls'))
+    # path('api/', include('api.urls')),
+    path('grading/', include('assisted_grading.urls')),
+    path('api/', include(router.urls))
 ]

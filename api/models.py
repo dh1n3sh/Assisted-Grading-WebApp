@@ -7,7 +7,7 @@ class Professor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=50, null=True)
-    email = models.EmailField(max_length=50, null=True)
+    # email = models.EmailField(max_length=50, null=True)
     department = models.CharField(max_length=20, null=True)
 
 
@@ -22,7 +22,7 @@ class Course(models.Model):
 
 class Test(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
-
+    name = models.CharField(max_length=50)
     date = models.DateField(null=True)
 
     consolidated_marksheet = models.FileField(
