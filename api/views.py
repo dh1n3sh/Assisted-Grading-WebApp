@@ -13,13 +13,23 @@ from .models import Course, Professor, Test, Submission
 
 class CourseView(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
-    queryset = Course.objects.all()
+    queryset = Course.objects.none() 
 
+    def list(self, request): 
+
+        if 'professor' in request.GET: 
+            querySet = Course.objects.filter( 
+                professor = request.GET['professor'] 
+            ) 
+        else: 
+            querySet = Course.objects.none() 
+        
+        serialized = CourseSerializer(querySet, many=True) 
+        return Response (serialized.data) 
 
 class TestView(viewsets.ModelViewSet):
     serializer_class = TestSerializer
     queryset = Test.objects.all()
-    # Test.objects.filter(course == )
 
     def list(self, request):
         # return Response(request.GET)
