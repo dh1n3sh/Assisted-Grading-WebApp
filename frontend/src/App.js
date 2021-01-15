@@ -15,8 +15,6 @@ class App extends Component {
         test : test
     }
 
-    console.log(this.state)
-
   }
 
   componentDidMount(){

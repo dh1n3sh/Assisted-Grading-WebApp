@@ -1,6 +1,7 @@
 import react , {Component} from "react"
 import "./index.css"
 import {Button} from "reactstrap"
+import ImgsViewer from 'react-images-viewer'
 
 export default class SectionComponent extends Component{
 
@@ -52,6 +53,12 @@ export default class SectionComponent extends Component{
                 var qppattern = this.state.data.QpPattern;
                 var questionlist = this.getQuestionString(qppattern)
                 return questionlist.map(this.renderButton)
+            case "answer scripts":
+                return <ImgsViewer
+                            imgs = {[{src : "https://static.toiimg.com/photo/msid-67586673/67586673.jpg?3918697"}]}
+                            isOpen = {true}
+                            currImg={0}
+                        />
             default:
                 return <div>yet to be designed</div>
 
