@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from rest_framework import viewsets
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from itertools import chain
 
@@ -19,6 +19,16 @@ class CourseView(viewsets.ModelViewSet):
 class TestView(viewsets.ModelViewSet):
     serializer_class = TestSerializer
     queryset = Test.objects.all()
+    # Test.objects.filter(course == )
+
+    def list(self, request):
+        # return Response(request.GET)
+        if 'course' in request.GET:
+            q_set = Test.objects.filter(course=request.GET['course'])
+        else:
+            q_set = Test.objects.all()
+        serialized = TestSerializer(q_set, many=True)
+        return Response(serialized.data)
 
 
 class SignupView(viewsets.ModelViewSet):
@@ -51,6 +61,16 @@ class SubmissionView (viewsets.ModelViewSet):
 
     serializer_class = SubmissionSerializer
     queryset = Submission.objects.all()
+
+    def list(self, request):
+        # return Response(request.GET)
+        if 'test' in request.GET:
+            q_set = Submission.objects.filter(test=request.GET['test'])
+        else:
+            q_set = Submission.objects.all()
+
+        serialized = SubmissionSerializer(q_set, many=True)
+        return Response(serialized.data)
 
 
 class UserLoginView(viewsets.ModelViewSet):
