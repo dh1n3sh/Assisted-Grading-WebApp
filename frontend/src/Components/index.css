@@ -5,12 +5,15 @@ div.section{
     float : left;
     text-align : center;
     font-weight : bold;
+    font-size : 25px;
     font-style : italic;
 }
 
 div.sectionButtonPanel{ 
     display : flex;
-    flex-flow : column wrap
+    flex-direction : column;
+    flex-wrap : wrap;
+    justify-content: center;
 }
 
 .sectionbtn{
