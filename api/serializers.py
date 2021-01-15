@@ -12,7 +12,7 @@ class CourseSerializer(serializers.ModelSerializer):
 class TestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Test
-        fields = ('id', 'name', 'date', 'qp_tree')
+        fields = ('id', 'name', 'date', 'qp_tree', 'answer_scripts', 'course')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -20,11 +20,13 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'password', 'email')
 
-class SubmissionSerializer (serializers.ModelSerializer): 
 
-    class Meta: 
+class SubmissionSerializer (serializers.ModelSerializer):
+
+    class Meta:
         model = Submission
-        fields = ('id', 'submission_time', 'status', 'grade_tree') 
+        fields = ('id', 'submission_time', 'status', 'grade_tree')
+
 
 class ProfessorSerializer(serializers.ModelSerializer):
     user = UserSerializer()

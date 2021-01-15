@@ -21,30 +21,6 @@ class TestView(viewsets.ModelViewSet):
     queryset = Test.objects.all()
 
 
-class UserLoginView(viewsets.ModelViewSet):
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
-
-    def create(self, request):
-        user = authenticate(
-            username=request.POST['username'], password=request.POST['password'])
-        if user is not None:
-            login(request, user)
-            return Response(UserSerializer(user).data)
-            # return HttpResponse("Hey "+user.username)
-        else:
-            return Response("Login Failed")
-            # return HttpResponse("Failed")
-
-
-class ProfessorView(viewsets.ModelViewSet):
-    pass
-
-
-def index(request):
-    return HttpResponse("Hello, world. You're at the api index.")
-
-
 class SignupView(viewsets.ModelViewSet):
     http_method_names = ['post']
 
@@ -67,11 +43,35 @@ class SignupView(viewsets.ModelViewSet):
             prof = Professor(user=user,  name=name)
             prof.save()
             return Response(ProfessorSerializer(prof).data)
-    
-class SubmissionView (viewsets.ModelViewSet): 
+
+
+class SubmissionView (viewsets.ModelViewSet):
 
     # http_method_names = ['post']
 
-    serializer_class = SubmissionSerializer 
-    queryset = Submission.objects.all() 
-    
+    serializer_class = SubmissionSerializer
+    queryset = Submission.objects.all()
+
+
+class UserLoginView(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+
+    def create(self, request):
+        user = authenticate(
+            username=request.POST['username'], password=request.POST['password'])
+        if user is not None:
+            login(request, user)
+            return Response(UserSerializer(user).data)
+            # return HttpResponse("Hey "+user.username)
+        else:
+            return Response("Login Failed")
+            # return HttpResponse("Failed")
+
+
+class ProfessorView(viewsets.ModelViewSet):
+    pass
+
+
+def index(request):
+    return HttpResponse("Hello, world. You're at the api index.")
