@@ -29,8 +29,8 @@ class App extends Component {
       <div className="App">
           <SectionComponent width="15%" heading="questions" data={this.state.test}/>
           <SectionComponent width="15%" heading="segments" data={this.state.segments} />
-          <SectionComponent width="50%" heading="answer scripts"/>
-          <SectionComponent width="20%" heading="marks allocation"/>
+          <SectionComponent width="50%" heading="answer scripts" data={undefined}/>
+          <SectionComponent width="20%" heading="marks allocation" data={undefined}/>
       </div>
     );
   

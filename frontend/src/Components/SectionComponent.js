@@ -10,20 +10,52 @@ export default class SectionComponent extends Component{
 
         this.state = {
             width : props.width,
-            heading : props.heading
+            heading : props.heading,
+            data : props.data
         }
 
+        this.getQuestionString = this.getQuestionString.bind(this);
         this.renderButton = this.renderButton.bind(this);
+        this.renderSectionElements = this.renderSectionElements.bind(this);
     }
 
-    componentDidMount(){
-        if(this.props.heading==="segments"){
-            this.setState({data : this.props.data});
-        }
+    getQuestionString(data){
+        
+        var questionlist = []
+        
+        Object.keys(data).forEach(question =>{
+            var templist = this.getQuestionString(data[question])
+            if(templist.length===0){
+                questionlist.push(question)
+            }
+            else{
+                templist.forEach(q=>{
+                    questionlist.push(question+"-"+q)
+                })
+            }
+        })
+        return questionlist
     }
 
     renderButton(segment){
         return (<Button className="sectionbtn" color="secondary" >{segment}</Button>)
+    }
+
+    renderSectionElements(){
+        
+        if(this.state.data==undefined) return null;
+
+        switch(this.state.heading){
+            case "segments":
+                return this.state.data.map(this.renderButton)
+            case "questions":
+                var qppattern = this.state.data.QpPattern;
+                var questionlist = this.getQuestionString(qppattern)
+                return questionlist.map(this.renderButton)
+            default:
+                return <div>yet to be designed</div>
+
+        }
     }
 
     render(){
@@ -32,7 +64,7 @@ export default class SectionComponent extends Component{
             <div className = "section" style = {{width : this.state.width}}>
                 {this.state.heading}
                 <div className = "sectionButtonPanel" style={{visibility : this.state.data!=undefined}}>
-                    {this.state.data==undefined?null:this.state.data.map(this.renderButton)}
+                    {this.renderSectionElements()}
                 </div>
             </div>
         )
