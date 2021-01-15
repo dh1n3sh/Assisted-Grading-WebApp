@@ -1,0 +1,73 @@
+{ 
+    "QpPattern": { 
+
+        "1": { 
+            "a": 25, 
+            "b": { 
+                "i": 10,  
+                "ii": 10
+            }
+        }, 
+
+        "2": 5 
+    },
+
+    "submissions": [
+        
+        {
+            "submission_id": "001", 
+            "submission": { 
+
+                "1": { 
+                    "a": [
+                        "sample remarks", -1, "uploads/segmentation_images/1237651.png",  
+                        "/uploads/processed_images/1237651/"
+                    ],   
+                    "b": { 
+                        "i": [
+                            "sample remarks", -1, "uploads/segmentation_images/4342.png",  
+                            "/uploads/processed_images/4342/"
+                        ], 
+                        "ii": [
+                            "sample remarks", 7, "uploads/segmentation_images/6712.png",  
+                        "/uploads/processed_images/6712/"
+                        ]
+                    }
+                }, 
+        
+                "2": [
+                    "sample remarks", 3, "uploads/segmentation_images/1237651.png",  
+                        "/uploads/processed_images/9812/"
+                ] 
+            } 
+        }, 
+        
+        {
+            "submission_id": "002",  
+            "submission": { 
+
+                "1": { 
+                    "a": [
+                        "sample remarks", 12, "uploads/segmentation_images/1234.png",  
+                        "/uploads/processed_images/1234/"
+                    ], 
+                    "b": { 
+                        "i": [
+                            "sample remarks", -1, "uploads/segmentation_images/9981.png",  
+                        "/uploads/processed_images/9981/"
+                        ], 
+                        "ii": [
+                            "sample remarks", -1, "uploads/segmentation_images/6767.png",  
+                        "/uploads/processed_images/6767/"
+                        ]
+                    }
+                }, 
+        
+                "2": [
+                    "sample remarks", 5, "uploads/segmentation_images/3213.png",  
+                        "/uploads/processed_images/3213/"
+                ] 
+            } 
+        }
+    ]
+}
