@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+
 # Create your models here.
-
-
 class Professor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
@@ -26,8 +25,10 @@ class Test(models.Model):
     date = models.DateField(null=True)
 
     consolidated_marksheet = models.FileField(
-        upload_to='uploads/testMarksheets/',
+        upload_to='uploads/marksheets/',
         null=True)
+
+    qp_tree = models.FileField (upload_to='uploads/qp_tree', null=True)  
 
 # https://docs.djangoproject.com/en/3.1/ref/models/fields/#filefield
 
@@ -39,8 +40,10 @@ class Submission(models.Model):
         upload_to='uploads/submissions/', null=True)
     submission_time = models.DateTimeField(null=True)
     status = models.IntegerField(null=True)
+    grade_tree = models.FileField (upload_to= 'uploads/grade_tree/', null = True) 
 
 
+#DEPRECATED 
 class QpNode (models.Model):
 
     test = models.ForeignKey(Test, on_delete=models.CASCADE, null=True)
@@ -53,7 +56,7 @@ class QpNode (models.Model):
         null=True
     )
 
-
+#DEPRECATED 
 class GradeNode (models.Model):
 
     submission = models.ForeignKey(
@@ -79,4 +82,4 @@ class GradeNode (models.Model):
         'self',
         on_delete=models.CASCADE,
         null=True
-    )
+    )   

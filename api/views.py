@@ -7,8 +7,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from itertools import chain
 
-from .serializers import CourseSerializer, TestSerializer, UserSerializer, ProfessorSerializer
-from .models import Course, Professor, Test
+from .serializers import ProfessorSerializer, CourseSerializer, TestSerializer, SubmissionSerializer, UserSerializer
+from .models import Course, Professor, Test, Submission
 
 
 class CourseView(viewsets.ModelViewSet):
@@ -67,3 +67,11 @@ class SignupView(viewsets.ModelViewSet):
             prof = Professor(user=user,  name=name)
             prof.save()
             return Response(ProfessorSerializer(prof).data)
+    
+class SubmissionView (viewsets.ModelViewSet): 
+
+    # http_method_names = ['post']
+
+    serializer_class = SubmissionSerializer 
+    queryset = Submission.objects.all() 
+    
