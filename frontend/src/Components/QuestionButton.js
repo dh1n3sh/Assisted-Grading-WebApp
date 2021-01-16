@@ -15,13 +15,14 @@ export default class QuestionButton extends Component{
             qno : props.qno,
             width : props.width,
             isChild : false,
-            handleButtonClick : props.handleButtonClick
+            handleButtonClick : props.handleButtonClick,
+            handleMarkState : props.handleMarkState
         }
 
         if(Object.keys(this.state.hierarchy).length==0) {
             this.state.isChild = true;
         }
-        this.reduceWidth = this.reduceWidth.bind(this);
+        
         this.renderChildButtons = this.renderChildButtons.bind(this);
         this.handleButtonClick = this.state.handleButtonClick;
         this.handleButtonClick = this.handleButtonClick.bind(this);
@@ -43,18 +44,6 @@ export default class QuestionButton extends Component{
         return null
     }
 
-    reduceWidth(width){
-        return "60%"
-        switch(width){
-            case "50%":
-                return "45%"
-            case "45%":
-                return "35%"
-            default : 
-                return "25%"
-        }
-    }
-
     renderChildButtons(){
         var children = Object.keys(this.state.hierarchy);
 
@@ -68,24 +57,14 @@ export default class QuestionButton extends Component{
                 ancestor = {this.state.ancestor + this.state.qno}
                 isVisible = {this.state.isExpanded}
                 qno = {subquestion}
-                width = {this.reduceWidth(this.state.width)}
+                width = {"60%"}
                 handleButtonClick = {this.state.handleButtonClick}
+                handleMarkState = {this.state.handleMarkState}
             />
         })
     }
 
-    // handleButtonClick(event){
-    //     // if(this.state.isChild==true)
-    //     //     window.alert(this.state.ancestor+this.state.qno);
-    //     this.setState((prevState)=>{
-    //         return ({
-    //         isExpanded : !prevState.isExpanded
-    //         })
-    //     })
-    // }
-
     render(){
-        console.log(this.state)
         return (
             <div style={{ display : "flex" , flexDirection : "column" , flexWrap : "wrap" ,alignContent : "flex-end"}}>
                 {this.state.isVisible&&

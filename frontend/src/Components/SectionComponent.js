@@ -15,33 +15,41 @@ export default class SectionComponent extends Component{
             width : props.width,
             heading : props.heading,
             data : props.data,
-            photoIsOpen : false
+            photoIsOpen : false,
+            isSubQuestionVisible : props.isSubQuestionVisible,
+            currQno : props.currQno,
+            subQuestionMarks : props.subQuestionMarks,
+            handleMarkState : props.handleMarkState
         }
 
-        // this.getQuestionString = this.getQuestionString.bind(this);
         this.renderButton = this.renderButton.bind(this);
         this.renderSectionElements = this.renderSectionElements.bind(this);
         this.renderQuestionButton = this.renderQuestionButton.bind(this);
         
     }
 
-    // getQuestionString(data){
+    static getDerivedStateFromProps(nextProps, prevState) {
         
-    //     var questionlist = []
-        
-    //     Object.keys(data).forEach(question =>{
-    //         var templist = this.getQuestionString(data[question])
-    //         if(templist.length===0){
-    //             questionlist.push(question)
-    //         }
-    //         else{
-    //             templist.forEach(q=>{
-    //                 questionlist.push(question+"-"+q)
-    //             })
-    //         }
-    //     })
-    //     return questionlist
-    // }
+            return {
+                width : nextProps.width,
+                heading : nextProps.heading,
+                isSubQuestionVisible : nextProps.isSubQuestionVisible,
+                currQno : nextProps.currQno,
+                subQuestionMarks : nextProps.subQuestionMarks
+                
+            }
+        }
+
+    
+    handleButtonClick(event){
+        var isVisible = this.state.isChild
+        this.state.handleMarkState(isVisible,this.state.ancestor+this.state.qno,this.state.hierarchy);
+        this.setState((prevState)=>{
+            return ({
+            isExpanded : !prevState.isExpanded
+            })
+        })
+    }
 
     renderQuestionButton(){
         return Object.keys(this.state.data.QpPattern).map(question => {
@@ -52,23 +60,13 @@ export default class SectionComponent extends Component{
                         isVisible = {true}
                         width = {"50%"}
                         handleButtonClick = {this.handleButtonClick}
+                        handleMarkState = {this.state.handleMarkState}
                 />  
         })
     }
 
     renderButton(segment){
         return (<Button className="sectionbtn" color="secondary" key={segment} >{segment}</Button>)
-    }
-
-    handleButtonClick(event){
-        if(this.state.isChild==true){
-            window.alert(this.state.ancestor+this.state.qno);
-        }
-        this.setState((prevState)=>{
-            return ({
-            isExpanded : !prevState.isExpanded
-            })
-        })
     }
 
     renderSectionElements(){
@@ -99,9 +97,9 @@ export default class SectionComponent extends Component{
                         </div>
             case "marks allocation":
                 return <div><MarksComponent 
-                                isSubQuestionVisible={true} 
-                                qno={"1"} 
-                                subQuestionMarks = {"10"} 
+                                isSubQuestionVisible={this.state.isSubQuestionVisible} 
+                                qno={this.state.currQno} 
+                                subQuestionMarks = {this.state.subQuestionMarks} 
                                 totalMarksAwarded = "70" 
                                 totalMarks = "100"
                                 />
@@ -118,7 +116,6 @@ export default class SectionComponent extends Component{
     }
 
     render(){
-
         return(
             <div className = "section" style = {{width : this.state.width}}>
                 {this.state.heading}
