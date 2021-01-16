@@ -3,6 +3,7 @@ import "./index.css"
 import {Button} from "reactstrap"
 import ImgsViewer from "react-images-viewer"
 import QuestionButton from "./QuestionButton"
+import MarksComponent from "./MarksComponent"
 
 export default class SectionComponent extends Component{
 
@@ -50,12 +51,24 @@ export default class SectionComponent extends Component{
                         qno = {question}
                         isVisible = {true}
                         width = {"50%"}
+                        handleButtonClick = {this.handleButtonClick}
                 />  
         })
     }
 
     renderButton(segment){
         return (<Button className="sectionbtn" color="secondary" key={segment} >{segment}</Button>)
+    }
+
+    handleButtonClick(event){
+        if(this.state.isChild==true){
+            window.alert(this.state.ancestor+this.state.qno);
+        }
+        this.setState((prevState)=>{
+            return ({
+            isExpanded : !prevState.isExpanded
+            })
+        })
     }
 
     renderSectionElements(){
@@ -85,7 +98,19 @@ export default class SectionComponent extends Component{
                                 />
                         </div>
             case "marks allocation":
-                return <textarea name="marks remarks" placeholder="Remarks for the answers." row="4" height="100%" width="100%"></textarea>
+                return <div><MarksComponent 
+                                isSubQuestionVisible={true} 
+                                qno={"1"} 
+                                subQuestionMarks = {"10"} 
+                                totalMarksAwarded = "70" 
+                                totalMarks = "100"
+                                />
+                            <textarea 
+                                name="marks remarks" 
+                                placeholder="Remarks for the answers." 
+                                height="100%" 
+                                width="100%"
+                                /></div>
             default:
                 return <div>yet to be designed</div>
 
