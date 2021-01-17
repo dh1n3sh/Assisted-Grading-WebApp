@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
+from django.views.generic.base import RedirectView
 from api import views
 
 router = routers.DefaultRouter()
@@ -31,4 +32,7 @@ urlpatterns = [
     path('grading/', include('assisted_grading.urls')),
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),
+    path('', RedirectView.as_view(
+        url='api/', permanent=False), name='index')
+
 ]
