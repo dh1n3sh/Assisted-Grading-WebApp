@@ -69,13 +69,11 @@ class TestView(viewsets.ModelViewSet):
             return Response(serialized.data)
 
         profLoggedIn = Professor.objects.filter(user=request.user)[0]
-        try:
-            courseProf = Course.objects.get(id=request.GET['course']).professor
-        except:
-            raise PermissionDenied
 
-        if profLoggedIn != courseProf:
-            raise PermissionDenied
+        courseProf = Course.objects.get(id=request.GET['course']).professor
+
+        # if profLoggedIn != courseProf:
+        #     raise PermissionDenied
 
         q_set = Test.objects.filter(course=request.GET['course'])
         print(q_set)
@@ -93,7 +91,8 @@ class TestView(viewsets.ModelViewSet):
 
         profLoggedIn = Professor.objects.filter(user=request.user)[0]
         try:
-            courseProf = Course.objects.get(id=request.GET['course']).professor
+            courseProf = Course.objects.get(
+                id=request.POST['course']).professor
         except:
             raise PermissionDenied
 
@@ -104,8 +103,8 @@ class TestView(viewsets.ModelViewSet):
 
             name = request.POST['name']
             date = request.POST['date']
-            qp_tree = request.POST['qp_tree']
-            answer_scripts = request.POST['answer_scripts']
+            qp_tree = request.FILES['qp_tree']
+            answer_scripts = request.FILES['answer_scripts']
 
             course_id = request.POST['course']
             course = Course.objects.get(id=course_id)
