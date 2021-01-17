@@ -63,8 +63,10 @@ class TestView(viewsets.ModelViewSet):
             raise PermissionDenied
 
         if 'course' not in request.GET:
-            raise SuspiciousOperation(
-                "Invalid request; missing course details")
+            q_set = Test.objects.all()
+            print(q_set)
+            serialized = TestSerializer(q_set, many=True)
+            return Response(serialized.data)
 
         profLoggedIn = Professor.objects.filter(user=request.user)[0]
         try:
