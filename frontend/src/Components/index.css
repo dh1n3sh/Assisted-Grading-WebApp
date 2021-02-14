@@ -20,7 +20,7 @@ div.sectionButtonPanel{
     margin  : 10px;
 }
 
-.login-page{
+.page-with-form{
     display : flex;
     height : 100vh;
     width : 50vw;

@@ -4,7 +4,7 @@ import {Form , Input , Button} from "reactstrap";
 export default class LoginPage extends Component{
     render(){
         return(
-            <div className="login-page">
+            <div className="page-with-form">
                 <Form>
                     <Input type="text" placeholder="username"/>
                     <Input type="password" placeholder="password"/>
