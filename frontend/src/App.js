@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import GradingPage from "./Components/GradingPage";
 import LoginPage from "./Components/LoginPage";
 import TestCreationPage from "./Components/TestCreationPage";
+import DashboardPage from "./Components/DashboardPage";
 
 class App extends Component {
   
@@ -17,6 +18,7 @@ class App extends Component {
       <Switch>
         <Route exact path="/grading" component={GradingPage}/>
         <Route exact path="/test-creation" component={TestCreationPage}/>
+        <Route exact path="/home" component={DashboardPage}/>
         <Route exact path="/" component={LoginPage}/>
       </Switch>
     </Router>

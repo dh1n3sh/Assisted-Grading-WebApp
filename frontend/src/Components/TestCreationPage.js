@@ -57,7 +57,8 @@ export default class TestCreationPage extends Component{
                     <Input type="date" placeholder="Test-date"/>
                     <Input type="number" placeholder="noOfQno"/>
                 </FormGroup>
-                {this.renderChildren()}
+                {/* {this.renderChildren()} */}
+                <Input type="file" accept="application/json"></Input>
                 <Button color="secondary">Create Test</Button>
             </Form>
         </div>
