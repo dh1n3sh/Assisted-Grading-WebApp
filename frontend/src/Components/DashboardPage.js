@@ -1,6 +1,8 @@
 import React , {Component} from "react";
 import { Jumbotron } from "reactstrap";
 
+import DashboardSectionComponent from "./DashboardSectionComponent";
+
 export default class DashboardPage extends Component{
 
     constructor(props){
@@ -9,9 +11,18 @@ export default class DashboardPage extends Component{
         this.state = {
             profName : "Aravindan",
             courseName : "TOC",
-            courseId : "CS7092"
+            courseId : "CS7092",
+            data : [ "some" , "made" , "up" , "shit" , "to" , "mock" , "data" , "stream", "of", "either", "courses", "or", "tests" ]
         }
+
+        this.dummyhandler = this.dummyhandler.bind(this);
+        
     }
+
+    dummyhandler(e){
+        console.log(e)
+    }
+    
 
     render(){
         return( 
@@ -22,7 +33,9 @@ export default class DashboardPage extends Component{
                         <div >{this.state.profName}</div>
                     </div>
                 </Jumbotron>
-
+                <div className = "dashboard">
+                    {this.state.data.map((obj)=><DashboardSectionComponent data = {obj} clickHandler = {this.dummyhandler} />)}
+                </div>
             </div>
         );
     }

@@ -1,5 +1,6 @@
 import React , {Component} from "react";
 import {Form, Input , Button, FormGroup} from "reactstrap";
+import SortableTree , {addNodeUnderParent} from "react-sortable-tree";
 
 import QuestionTabComponent from "./QuestionTabComponent";
 
@@ -9,12 +10,20 @@ export default class TestCreationPage extends Component{
         super(props);
 
         this.state = {
-            qp : { "1" : {"a" :[],"b":[]},"2" : {"a":[]}}
+            qp : [
+                    {
+                        title : "1",
+                        children : [ { title : "a" } , { title : "b" } ],
+                        expanded : true
+                    },
+                    {
+                        title : "2",
+                        expanded : true
+                    }
+                ]
         }
-
-        // this.handleClick = this.handleClick.bind(this);
+        
         this.renderChildren = this.renderChildren.bind(this);
-        // this.handler = this.handler.bind(this);
     }
 
     renderChildren(){
@@ -35,19 +44,6 @@ export default class TestCreationPage extends Component{
         return <div>{comps.map(x=>x)}</div>;
     }
 
-    // handler(ancestor,qno,newqno){
-    //     this.setState((prevState)=>{
-            
-    //     })
-    // }
-
-    // recTraverse(tree,l,newq){
-        
-    //     if(l.length==1){
-    //         if(tree[l])
-    //     }
-    // }
-
     render(){
         return (
         <div className="page-with-form">
@@ -57,9 +53,13 @@ export default class TestCreationPage extends Component{
                     <Input type="date" placeholder="Test-date"/>
                     <Input type="number" placeholder="noOfQno"/>
                 </FormGroup>
-                {/* {this.renderChildren()} */}
-                <Input type="file" accept="application/json"></Input>
-                <Button color="secondary">Create Test</Button>
+                <div style={{ height : "50vh"}}>
+                    <SortableTree
+                        treeData = {this.state.qp}
+                        onChange = {newQPTree=>{this.setState({newQPTree});}}
+                        />
+                </div>
+               <Button color="secondary">Create Test</Button>
             </Form>
         </div>
         );

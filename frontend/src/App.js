@@ -3,6 +3,7 @@ import { BrowserRouter as Router , Route , Switch } from "react-router-dom";
 
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
+import 'react-sortable-tree/style.css';
 
 import GradingPage from "./Components/GradingPage";
 import LoginPage from "./Components/LoginPage";
