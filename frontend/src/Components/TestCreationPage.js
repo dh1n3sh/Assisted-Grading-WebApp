@@ -24,6 +24,7 @@ export default class TestCreationPage extends Component{
         }
         
         this.renderChildren = this.renderChildren.bind(this);
+        this.renderButton =  this.renderButton.bind(this);
     }
 
     renderChildren(){
@@ -44,6 +45,9 @@ export default class TestCreationPage extends Component{
         return <div>{comps.map(x=>x)}</div>;
     }
 
+    renderButton(node, path){
+        return <Button color="primary" style={{borderRadius : "50%"}} onClick = {(e)=>{window.alert(node.title+"-"+path)}}>+</Button>
+    }
     render(){
         return (
         <div className="page-with-form">
@@ -57,9 +61,15 @@ export default class TestCreationPage extends Component{
                     <SortableTree
                         treeData = {this.state.qp}
                         onChange = {newQPTree=>{this.setState({newQPTree});}}
+                        generateNodeProps={extendedNode => ({
+                            title: (
+                                <a href={extendedNode.node.url}>{extendedNode.node.title}</a>
+                            ),
+                            buttons: [this.renderButton(extendedNode.node,extendedNode.path)]
+                        })}
                         />
                 </div>
-               <Button color="secondary">Create Test</Button>
+               <Button color="primary">Create Test</Button>
             </Form>
         </div>
         );
