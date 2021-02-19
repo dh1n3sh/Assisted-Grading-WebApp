@@ -28,7 +28,7 @@ export default class DashboardPage extends Component{
         return( 
             <div>
                 <Jumbotron fluid>
-                    <div style = {{width : "100vw" , display : "flex" , flexDirection : "row" , justifyContent : "space-around"}}>
+                    <div style =  {{width : "100vw" , display : "flex" , flexDirection : "row" , justifyContent : "space-around"}}>
                         <div >{this.state.courseId + " - " + this.state.courseName}</div>
                         <div >{this.state.profName}</div>
                     </div>
