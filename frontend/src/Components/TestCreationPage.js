@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Form, Input, Button, FormGroup } from "reactstrap";
-import SortableTree, { addNodeUnderParent, defaultGetNodeKey, removeNodeAtPath } from "react-sortable-tree";
-
-import QuestionTabComponent from "./QuestionTabComponent";
+import { Form, Input, Button, FormGroup, Modal , ModalBody , ModalFooter , ModalHeader} from "reactstrap";
+import SortableTree, { addNodeUnderParent, removeNodeAtPath } from "react-sortable-tree";
+import JSONViewer from "react-json-viewer";
+import JSONTree from "react-json-tree";
+import JSONPretty from "react-json-pretty";
 
 export default class TestCreationPage extends Component {
 
@@ -13,55 +14,75 @@ export default class TestCreationPage extends Component {
             qp: [
                 {
                     qno: "1",
-                    children: [{ qno: "a", expanded: true }, { qno: "b", expanded: true }],
+                    children: [{ qno: "a", children : [] ,expanded: true }, { qno: "b", children : [] ,expanded: true }],
                     expanded: true
                 },
                 {
                     qno: "2",
+                    children : [],
                     expanded: true
                 }
             ],
-            treeIdCounter: 4
+            popup : false
         }
 
-        this.renderChildren = this.renderChildren.bind(this);
-        this.renderButton = this.renderButton.bind(this);
+        this.renderAddButton = this.renderAddButton.bind(this);
+        this.renderDeleteButton = this.renderDeleteButton.bind(this);
+        this.constructFinalQpTree = this.constructFinalQpTree.bind(this);
+        this.generateQp = this.generateQp.bind(this);
+        this.togglePopup = this.togglePopup.bind(this);
     }
 
-    renderChildren() {
+    togglePopup(){
+        this.setState(prevState =>{
+            return { popup : !prevState.popup}
+        })
+    }
 
-        console.log(Object.keys(this.state.qp));
-
-        let comps = []
-
-        Object.keys(this.state.qp).forEach((child) => {
-            comps.push(<QuestionTabComponent
-                ancestor={[]}
-                children={this.state.qp[child]}
-                qno={child}
-                handler={null}
-            />);
+    generateQp(){
+        let finalQp = this.constructFinalQpTree(this.state.qp,"");
+        this.setState({
+            finalQp : finalQp
         });
-
-        return <div>{comps.map(x => x)}</div>;
+        
+        this.setState({popup : true});
     }
 
-    renderButton(node, path) {
+    constructFinalQpTree(tree , ancestor){
+        let finalqp = {}
+
+        tree.forEach((node)=>{
+
+            let currentQno = ancestor === "" ? node.qno : ancestor + "-" + node.qno;
+            
+            if(node.children.length === 0){
+                let mark = prompt("Enter the marks for the question " + currentQno + " : " , "0");
+                finalqp[node.qno] = mark; 
+            }
+            else{
+                finalqp[node.qno] = this.constructFinalQpTree(node.children , currentQno);
+            }
+        })
+
+        return finalqp;
+    }
+
+    renderAddButton(node, path) {
         // cancelling the prompt still create new child.
         return <Button
             color="primary"
-            style={{ borderRadius: "50%" }}
+            style={{ borderRadius: "50%" , marginLeft : "5px" , marginRight : "5px"}}
             onClick={(e) => {
-                let nextq = prompt("enter the new Question no.");
+                let nextq = prompt("enter the new Question no." ,"-");
                 let listOfChildren = node.children !== undefined ? node.children.map(child => child.title) : null;
 
                 while (listOfChildren != null && listOfChildren.includes(nextq))
-                    nextq = prompt("Duplicate Question no. encountered! Enter the new Question no.");
+                    nextq = prompt("Duplicate Question no. encountered! Enter the new Question no.","-");
                 // nextq = Math.max(node.children) + 1;
                 this.setState({
                     qp: addNodeUnderParent({
                         treeData: this.state.qp,
-                        newNode: { qno: nextq, expanded: true },
+                        newNode: { qno: nextq, expanded: true , children : [] },
                         parentKey: path[path.length - 1],
                         getNodeKey: ({ treeIndex }) => treeIndex
                     }).treeData
@@ -72,7 +93,7 @@ export default class TestCreationPage extends Component {
     renderDeleteButton(rowInfo) {
         return <Button
             color="secondary"
-            style={{ borderRadius: "50%" }}
+            style={{ borderRadius: "50%" , marginLeft : "5px" , marginRight : "5px"}}
             onClick={(e) => {
                 let { node, treeIndex, path } = rowInfo;
                 this.setState({
@@ -107,10 +128,25 @@ export default class TestCreationPage extends Component {
                                 title: (
                                     extendedNode.node.qno
                                 ),
-                                buttons: [this.renderButton(extendedNode.node, extendedNode.path), this.renderDeleteButton(extendedNode)]
+                                buttons: [this.renderAddButton(extendedNode.node, extendedNode.path), this.renderDeleteButton(extendedNode)]
                             })}
                         />
                     </div>
+                    <Modal isOpen = {this.state.popup} toggle = {this.togglePopup}>
+                        <ModalHeader toggle = {this.togglePopup}>
+                            Final Question Paper
+                        </ModalHeader>
+
+                        <ModalBody>
+                            {/* <JSONViewer json={this.state.finalQp}/> */}
+                            {/* <JSONTree data = {this.state.finalQp}/> */}
+                            <JSONPretty data={this.state.finalQp}/>
+                        </ModalBody>
+                        <ModalFooter>
+                            Question Paper structure can still be changed! Question paper structure generated last will be submitted when test is created.
+                        </ModalFooter>
+                    </Modal>
+                    <Button color="secondary" onClick={this.generateQp}>Generate QP</Button><br/>
                     <Button color="primary" onClick={() => { console.log(this.state) }}>Create Test</Button>
                 </Form>
             </div>
