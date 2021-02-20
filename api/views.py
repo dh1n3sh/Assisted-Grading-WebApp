@@ -11,6 +11,8 @@ from itertools import chain
 from .serializers import ProfessorSerializer, CourseSerializer, TestSerializer, SubmissionSerializer, UserSerializer
 from .models import Course, Professor, Test, Submission
 
+import sys
+
 def auth (user):  
     
     if isinstance(user, AnonymousUser):
@@ -191,8 +193,9 @@ class UserLoginView(viewsets.ModelViewSet):
     queryset = User.objects.all()
 
     def create(self, request):
-        user = authenticate(
-            username=request.POST['username'], password=request.POST['password'])
+        print(request)
+        print(request.__dict__, file=sys.stderr)
+        user = authenticate(username=request.POST.get('username'),password=request.POST.get('password'))
         if user is not None:
             login(request, user)
             return Response(UserSerializer(user).data)
