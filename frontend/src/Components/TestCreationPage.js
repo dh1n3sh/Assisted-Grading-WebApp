@@ -76,8 +76,8 @@ export default class TestCreationPage extends Component {
             onClick={(e) => {
                 let { node, treeIndex, path } = rowInfo;
                 this.setState({
-                    treeData: removeNodeAtPath({
-                        treeData: this.state.treeData,
+                    qp: removeNodeAtPath({
+                        treeData: this.state.qp,
                         path: path,   // You can use path from here
                         getNodeKey: ({ node: TreeNode, treeIndex: number }) => {
                             // console.log(number);
