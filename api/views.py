@@ -1,8 +1,8 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404 
+from django.http import HttpResponse, Http404 
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User, AnonymousUser 
+from django.contrib.auth.models import User, AnonymousUser
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
@@ -11,137 +11,152 @@ from itertools import chain
 from .serializers import ProfessorSerializer, CourseSerializer, TestSerializer, SubmissionSerializer, UserSerializer
 from .models import Course, Professor, Test, Submission
 
+def auth (user):  
+    
+    if isinstance(user, AnonymousUser):
+        raise PermissionDenied
+    
+    return Professor.objects.filter(user=user)[0]
 
 class CourseView(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
-    queryset = Course.objects.none() 
+    queryset = Course.objects.none()
 
-    def list(self, request): 
+    def list(self, request):
 
-        if isinstance(request.user, AnonymousUser):
-            raise PermissionDenied  
+        profLoggedIn = auth (request.user) 
 
-        profLoggedIn = Professor.objects.filter (user = request.user) [0] 
-        querySet = Course.objects.filter( 
-            professor = profLoggedIn  
-        ) 
-        serialized = CourseSerializer(querySet, many=True) 
-        
-        return Response (serialized.data) 
-    
+        querySet = Course.objects.filter(
+            professor=profLoggedIn
+        )
+        serialized = CourseSerializer(querySet, many=True)
+
+        return Response(serialized.data)
+
     def create(self, request):
+
+        profLoggedIn = auth (request.user) 
+
+        course_id = request.POST['course_id']
+        name = request.POST['name']
+        offering_dept = request.POST['offering_dept']
+
+        course = Course(
+            professor=profLoggedIn,
+            name=name,
+            offering_dept=offering_dept,
+            course_id=course_id
+        )
+        course.save()
+
+        return Response(CourseSerializer(course).data)
+    
+    def retrieve(self, request, pk=None):
+
+        profLoggedIn = auth (request.user) 
+        matches = Course.objects.filter (
+            professor = profLoggedIn, 
+        )  
+
+        course = get_object_or_404(matches, pk=pk)
+        serializer = CourseSerializer (course) 
+        return Response(serializer.data)
+
+    def destroy(self, request, pk = None):
         
-        if isinstance(request.user, AnonymousUser):
-            raise PermissionDenied  
+        profLoggedIn = auth (request.user) 
+        matches = Course.objects.filter (
+            professor = profLoggedIn, 
+        )  
 
-        profLoggedIn = Professor.objects.filter (user = request.user) [0]
+        course = get_object_or_404(matches, pk=pk)
+        course.delete() 
 
-        if request.method == 'POST':
-            
-            course_id = request.POST['course_id']
-            name = request.POST['name']
-            offering_dept = request.POST['offering_dept']
-
-            course = Course (
-                professor = profLoggedIn, 
-                name = name, 
-                offering_dept = offering_dept, 
-                course_id = course_id 
-            )
-            course.save() 
-
-            return Response(CourseSerializer(course).data)  
+        return HttpResponse(
+            "deleted" 
+        )  
 
 class TestView(viewsets.ModelViewSet):
     serializer_class = TestSerializer
     queryset = Test.objects.all()
 
+    def getTestProf (self, test): 
+        pass 
+
     def list(self, request):
-        
-        if isinstance(request.user, AnonymousUser):
-            raise PermissionDenied  
 
+        profLoggedIn = auth (request.user) 
+        
         if 'course' not in request.GET:
-            raise SuspiciousOperation("Invalid request; missing course details") 
 
-        profLoggedIn = Professor.objects.filter (user = request.user) [0]
-        try: 
-            courseProf = Course.objects.get(id = request.GET['course']).professor    
-        except: 
-            raise PermissionDenied 
+            profCourses = Course.objects.filter (
+                professor = profLoggedIn 
+            ) 
 
-        if profLoggedIn != courseProf:
-            raise PermissionDenied 
+            q_set = Test.objects.none() 
+            for course in profCourses: 
+                tests = Test.objects.filter (course = course) 
+                q_set = q_set | tests   
+            
+        else: 
+
+            matches = Course.objects.filter (
+                professor = profLoggedIn, 
+                )  
+
+            course = get_object_or_404(matches, pk= request.GET['course']) 
+            q_set = Test.objects.filter(course = course)  
         
-        q_set = Test.objects.filter(course=request.GET['course'])
-        print (q_set) 
-        serialized = TestSerializer(q_set, many=True)
-        return Response(serialized.data)
-    
+        serialized = TestSerializer (q_set.order_by("-date"), many = True) 
+        return Response (serialized.data)    
+
     def create(self, request):
-        
-        if isinstance(request.user, AnonymousUser):
-            raise PermissionDenied  
 
-        if 'course' not in request.POST:
-            raise SuspiciousOperation("Invalid request; missing course details") 
+        profLoggedIn = auth (request.user)
+        matches = Course.objects.filter (
+                professor = profLoggedIn, 
+                )  
 
-        profLoggedIn = Professor.objects.filter (user = request.user) [0]
-        try: 
-            courseProf = Course.objects.get(id = request.GET['course']).professor    
-        except: 
-            raise PermissionDenied 
+        course = get_object_or_404(matches, pk= request.POST['course']) 
+                
+        # if request.method == 'POST':  
 
-        if profLoggedIn != courseProf:
-            raise PermissionDenied 
+        name = request.POST['name']
+        date = request.POST['date']
+        qp_tree = request.FILES['qp_tree']
+        answer_scripts = request.FILES['answer_scripts']
 
-        if request.method == 'POST': #USE UTILS AND CALL ML SERVICE 
-            
-            name = request.POST['name']   
-            date = request.POST['date']
-            qp_tree = request.POST['qp_tree']
-            answer_scripts = request.POST['answer_scripts']
-            
-            course_id = request.POST['course']
-            course = Course.objects.get (id = course_id) 
+        test = Test(
+            course=course,
+            name=name,
+            date=date,
+            qp_tree=qp_tree,
+            answer_scripts=answer_scripts
+        )
+        test.save()
+        # USE UTILS AND CALL ML SERVICE
 
-            test = Test (
-                course = course, 
-                name = name, 
-                date = date, 
-                qp_tree = qp_tree, 
-                answer_scripts = answer_scripts 
-            )
-            test.save() 
-
-            return Response(TestSerializer(test).data)
+        return Response(TestSerializer(test).data)
 
 class SubmissionView (viewsets.ModelViewSet):
 
     # http_method_names = ['post']
-    #Try updating to include other parameters for filtering tests 
+    # Try updating to include other parameters for filtering tests
 
     serializer_class = SubmissionSerializer
     queryset = Submission.objects.all()
 
     def list(self, request):
 
-        if isinstance(request.user, AnonymousUser):
-            raise PermissionDenied
+        profLoggedIn = auth (request.user) 
         
-        if 'test' not in request.GET:
-            raise SuspiciousOperation("Invalid request; missing test details") 
-    
-        profLoggedIn = Professor.objects.filter (user = request.user) [0]
-
-        try: 
-            testCourse = Test.objects.get (id = request.GET['test']).course 
-            prof = Course.objects.get(id = testCourse.id).professor
-        except: 
-            raise PermissionDenied 
-
-        if (prof != profLoggedIn):  
-            raise PermissionDenied
+        try :
+            testCourse = Test.objects.get(id=request.GET['test']).course
+            prof = Course.objects.get(id=testCourse.id).professor
+            if (prof != profLoggedIn):
+                raise Http404()
+        except:  
+            raise Http404() 
 
         q_set = Submission.objects.filter(test=request.GET['test'])
         serialized = SubmissionSerializer(q_set, many=True)
@@ -154,9 +169,9 @@ class SignupView(viewsets.ModelViewSet):
     queryset = Professor.objects.all()
 
     def create(self, request):
-        
+
         if request.method == 'POST':
-            
+
             username = request.POST['user.username']
             password = request.POST['user.password']
             email = request.POST['user.email']
@@ -170,6 +185,7 @@ class SignupView(viewsets.ModelViewSet):
             prof.save()
             return Response(ProfessorSerializer(prof).data)
 
+
 class UserLoginView(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
@@ -180,7 +196,7 @@ class UserLoginView(viewsets.ModelViewSet):
         if user is not None:
             login(request, user)
             return Response(UserSerializer(user).data)
-            
+
         else:
             return Response("Login Failed")
 
