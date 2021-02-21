@@ -10,6 +10,7 @@
     "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
     "react": "^16.5.2",
+    "react-client-session": "^0.0.7",
     "react-dom": "^16.5.2",
     "react-images-viewer": "^1.6.2",
     "react-json-pretty": "^2.2.0",

@@ -193,9 +193,12 @@ class UserLoginView(viewsets.ModelViewSet):
     queryset = User.objects.all()
 
     def create(self, request):
-        print(request)
-        print(request.__dict__, file=sys.stderr)
-        user = authenticate(username=request.POST.get('username'),password=request.POST.get('password'))
+        print("--------------------------------")
+        print("post request received!")
+        print(request.data)
+        
+        print("-------------------------------")
+        user = authenticate(username=request.data.get('username'),password=request.data.get('password'))
         if user is not None:
             login(request, user)
             return Response(UserSerializer(user).data)
@@ -206,6 +209,23 @@ class UserLoginView(viewsets.ModelViewSet):
 
 class ProfessorView(viewsets.ModelViewSet):
     pass
+
+
+class MyProfessorView(viewsets.ModelViewSet):
+    serializer_class = ProfessorSerializer
+    queryset = Professor.objects.all()
+    def list(self, request, pk=None):
+
+        profLoggedIn = auth (request.user) 
+        # print(profLoggedIn)
+        # matches = Course.objects.filter (
+        #     professor = profLoggedIn, 
+        # )  
+
+        # course = get_object_or_404(matches, pk=pk)
+        serializer = ProfessorSerializer (profLoggedIn) 
+        return Response(serializer.data)
+        # return profLoggedIn
 
 
 def index(request):

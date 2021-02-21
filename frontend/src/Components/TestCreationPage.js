@@ -4,8 +4,9 @@ import SortableTree, { addNodeUnderParent, removeNodeAtPath } from "react-sortab
 import JSONViewer from "react-json-viewer";
 import JSONTree from "react-json-tree";
 import JSONPretty from "react-json-pretty";
+import {withRouter} from "react-router-dom";
 
-export default class TestCreationPage extends Component {
+class TestCreationPage extends Component {
 
     constructor(props) {
         super(props);
@@ -154,3 +155,5 @@ export default class TestCreationPage extends Component {
     }
 
 }
+
+export default TestCreationPage;

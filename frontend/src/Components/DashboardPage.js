@@ -1,38 +1,67 @@
 import React , {Component} from "react";
-import { Jumbotron } from "reactstrap";
-
+import { ReactSession } from "react-client-session";
+import { withRouter } from "react-router-dom";
+import MyJumbotron from "./MyJumbotron";
 import DashboardSectionComponent from "./DashboardSectionComponent";
+import axios from "axios";
 
-export default class DashboardPage extends Component{
+class DashboardPage extends Component{
 
     constructor(props){
         super(props);
 
         this.state = {
-            profName : "Aravindan",
-            courseName : "TOC",
-            courseId : "CS7092",
-            data : [ "some" , "made" , "up" , "shit" , "to" , "mock" , "data" , "stream", "of", "either", "courses", "or", "tests" ]
+            profName : ReactSession.get('userdata')['name'],
+            courseName : undefined,
+            courseId : undefined,
+            testName : undefined,
+            testId : undefined,
+            courseSelected : false,
+            data : []
         }
-
+          
         this.dummyhandler = this.dummyhandler.bind(this);
-        
+        this.populateData = this.populateData.bind(this);
     }
 
     dummyhandler(e){
         console.log(e)
     }
+
+    populateData(){
+
+        if(this.state.courseId === undefined){
+            axios.get('/api/courses')
+                .then(res => {
+                    console.log(res.data);
+                })
+        }
+        else if (this.state.testId === undefined){
+            axios.get('/api/tests')
+                .then(res => {
+                    console.log(res.data);
+                })
+        }
+        else{
+            axios.get('/api/submissions')
+                .then(res => {
+                    console.log(res.data);
+                })
+            // submission fetch
+        }
+    }
+
+    componentDidMount(){
+
+        this.populateData();
+    }
     
 
     render(){
+
         return( 
             <div>
-                <Jumbotron fluid>
-                    <div style =  {{width : "100vw" , display : "flex" , flexDirection : "row" , justifyContent : "space-around"}}>
-                        <div >{this.state.courseId + " - " + this.state.courseName}</div>
-                        <div >{this.state.profName}</div>
-                    </div>
-                </Jumbotron>
+                <MyJumbotron state = {this.state} history = {this.props.history}/>
                 <div className = "dashboard">
                     {this.state.data.map((obj)=><DashboardSectionComponent data = {obj} clickHandler = {this.dummyhandler} />)}
                 </div>
@@ -40,3 +69,5 @@ export default class DashboardPage extends Component{
         );
     }
 }
+
+export default withRouter(DashboardPage);
