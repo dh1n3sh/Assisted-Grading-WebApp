@@ -26,6 +26,7 @@ class DashboardPage extends Component {
         this.clickhandler = this.clickhandler.bind(this);
         this.populateData = this.populateData.bind(this);
         this.goBack = this.goBack.bind(this);
+        this.addBtnHandler = this.addBtnHandler.bind(this);
     }
 
     clickhandler(data) {
@@ -69,11 +70,23 @@ class DashboardPage extends Component {
         }, this.populateData)
     }
 
+    addBtnHandler(){
+        if(this.state.curType===1){
+            this.props.history.push({
+                pathname : '/test-creation',
+                state : this.state
+            });
+        }
+        else{
+            //still in development
+        }
+    }
+
     render() {
 
         return (
             <div>
-                <MyJumbotron state={this.state} history={this.props.history} goBack={this.goBack} />
+                <MyJumbotron state={this.state} history={this.props.history} goBack={this.goBack} addBtnHandler = {this.addBtnHandler} />
                 <div className="dashboard">
                     {this.state.data.map((obj) => <DashboardSectionComponent data={obj} clickHandler={this.clickhandler} />)}
                 </div>
