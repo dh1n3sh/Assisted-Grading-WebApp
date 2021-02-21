@@ -11,6 +11,8 @@ from itertools import chain
 from .serializers import ProfessorSerializer, CourseSerializer, TestSerializer, SubmissionSerializer, UserSerializer
 from .models import Course, Professor, Test, Submission
 
+import sys
+
 def auth (user):  
     
     if isinstance(user, AnonymousUser):
@@ -191,8 +193,12 @@ class UserLoginView(viewsets.ModelViewSet):
     queryset = User.objects.all()
 
     def create(self, request):
-        user = authenticate(
-            username=request.POST['username'], password=request.POST['password'])
+        print("--------------------------------")
+        print("post request received!")
+        print(request.data)
+        
+        print("-------------------------------")
+        user = authenticate(username=request.data.get('username'),password=request.data.get('password'))
         if user is not None:
             login(request, user)
             return Response(UserSerializer(user).data)
@@ -203,6 +209,23 @@ class UserLoginView(viewsets.ModelViewSet):
 
 class ProfessorView(viewsets.ModelViewSet):
     pass
+
+
+class MyProfessorView(viewsets.ModelViewSet):
+    serializer_class = ProfessorSerializer
+    queryset = Professor.objects.all()
+    def list(self, request, pk=None):
+
+        profLoggedIn = auth (request.user) 
+        # print(profLoggedIn)
+        # matches = Course.objects.filter (
+        #     professor = profLoggedIn, 
+        # )  
+
+        # course = get_object_or_404(matches, pk=pk)
+        serializer = ProfessorSerializer (profLoggedIn) 
+        return Response(serializer.data)
+        # return profLoggedIn
 
 
 def index(request):

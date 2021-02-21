@@ -1,38 +1,59 @@
-import React , {Component} from "react"
+import React, { Component } from "react";
+import { BrowserRouter as Router, Redirect, Route,Switch } from "react-router-dom";
+
 import './App.css';
-import SectionComponent from "./Components/SectionComponent";
 import 'bootstrap/dist/css/bootstrap.css';
-import test from "./Data/getSubmissionTest.json"
+import 'react-sortable-tree/style.css';
+
+import GradingPage from "./Components/GradingPage";
+import LoginPage from "./Components/LoginPage";
+// import LoginPage2 from "./Components/LoginPage2";
+import TestCreationPage from "./Components/TestCreationPage";
+import DashboardPage from "./Components/DashboardPage";
+
+import {ReactSession} from 'react-client-session';
 
 class App extends Component {
-  
-  constructor(props){
 
+  constructor(props){
+    
     super(props);
 
-    this.state = {
-        segments : ["original" , "paragraphs" , "tables" , "images"],
-        test : test
-    }
-
   }
 
-  componentDidMount(){
-    document.title = "grading"
-  }
+  render() {
 
-  render(){
-    
+    ReactSession.setStoreType("localStorage");
+
     return (
-      <div className="App">
-          <SectionComponent width="15%" heading="questions" data={this.state.test} />
-          <SectionComponent width="15%" heading="segments" data={this.state.segments} />
-          <SectionComponent width="50%" heading="answer scripts" data={"https://static.toiimg.com/photo/msid-67586673/67586673.jpg?3918697"}/>
-          <SectionComponent width="20%" heading="marks allocation" data="dummy"/>
-      </div>
+      <Router>
+        <Switch>
+          <PrivateRoute path="/grading" component={GradingPage} />
+          <PrivateRoute path="/test-creation" component={TestCreationPage} />
+          <LoginRoute path="/login" component={LoginPage} />
+          {/* <Route exact path="/login2" component={LoginPage2} /> */}
+          <PrivateRoute exact path="/" component={DashboardPage} />
+        </Switch>
+      </Router>
     );
-  
   }
+}
+
+function LoginRoute(props){
+      return isLoggedIn() ?
+            <Redirect to='/'/> : 
+            <Route exact path={props.path} component={props.component}/>
+}
+
+function PrivateRoute(props){
+    return isLoggedIn() ? 
+            <Route exact path={props.path} component={props.component}/> : 
+            <Redirect to='/login'/>
+}
+
+function isLoggedIn()
+{
+    return ReactSession.get('userdata') !== undefined;
 }
 
 export default App;

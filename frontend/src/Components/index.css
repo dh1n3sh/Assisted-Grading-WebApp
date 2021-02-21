@@ -19,3 +19,29 @@ div.sectionButtonPanel{
 .sectionbtn{
     margin  : 10px;
 }
+
+.page-with-form{
+    display : flex;
+    height : 100vh;
+    width : 50vw;
+    margin : auto;
+    flex-direction  : column;
+    justify-content : center;
+    align-content : center;
+}
+
+.dashboard{
+    display : flex;
+    flex-direction : row;
+    flex-wrap: wrap;
+    align-content : space-between
+}
+.dashboard-section{
+    height : 20vh;
+    line-height : 20vh;
+    width : 20vw;
+    margin : 10vh;
+    border-radius : 25px;
+    text-align : center;
+    background-color :cadetblue;
+}

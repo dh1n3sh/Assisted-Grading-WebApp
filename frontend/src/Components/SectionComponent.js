@@ -1,8 +1,9 @@
-import react , {Component} from "react"
+import React , {Component} from "react"
 import "./index.css"
 import {Button} from "reactstrap"
 import ImgsViewer from "react-images-viewer"
 import QuestionButton from "./QuestionButton"
+import MarksComponent from "./MarksComponent"
 
 export default class SectionComponent extends Component{
 
@@ -14,33 +15,41 @@ export default class SectionComponent extends Component{
             width : props.width,
             heading : props.heading,
             data : props.data,
-            photoIsOpen : false
+            photoIsOpen : false,
+            isSubQuestionVisible : props.isSubQuestionVisible,
+            currQno : props.currQno,
+            subQuestionMarks : props.subQuestionMarks,
+            handleMarkState : props.handleMarkState
         }
 
-        // this.getQuestionString = this.getQuestionString.bind(this);
         this.renderButton = this.renderButton.bind(this);
         this.renderSectionElements = this.renderSectionElements.bind(this);
         this.renderQuestionButton = this.renderQuestionButton.bind(this);
         
     }
 
-    // getQuestionString(data){
+    static getDerivedStateFromProps(nextProps, prevState) {
         
-    //     var questionlist = []
-        
-    //     Object.keys(data).forEach(question =>{
-    //         var templist = this.getQuestionString(data[question])
-    //         if(templist.length===0){
-    //             questionlist.push(question)
-    //         }
-    //         else{
-    //             templist.forEach(q=>{
-    //                 questionlist.push(question+"-"+q)
-    //             })
-    //         }
-    //     })
-    //     return questionlist
-    // }
+            return {
+                width : nextProps.width,
+                heading : nextProps.heading,
+                isSubQuestionVisible : nextProps.isSubQuestionVisible,
+                currQno : nextProps.currQno,
+                subQuestionMarks : nextProps.subQuestionMarks
+                
+            }
+        }
+
+    
+    handleButtonClick(event){
+        var isVisible = this.state.isChild
+        this.state.handleMarkState(isVisible,this.state.ancestor+this.state.qno,this.state.hierarchy);
+        this.setState((prevState)=>{
+            return ({
+            isExpanded : !prevState.isExpanded
+            })
+        })
+    }
 
     renderQuestionButton(){
         return Object.keys(this.state.data.QpPattern).map(question => {
@@ -50,6 +59,8 @@ export default class SectionComponent extends Component{
                         qno = {question}
                         isVisible = {true}
                         width = {"50%"}
+                        handleButtonClick = {this.handleButtonClick}
+                        handleMarkState = {this.state.handleMarkState}
                 />  
         })
     }
@@ -85,7 +96,19 @@ export default class SectionComponent extends Component{
                                 />
                         </div>
             case "marks allocation":
-                return <textarea name="marks remarks" placeholder="Remarks for the answers." row="4" height="100%" width="100%"></textarea>
+                return <div><MarksComponent 
+                                isSubQuestionVisible={this.state.isSubQuestionVisible} 
+                                qno={this.state.currQno} 
+                                subQuestionMarks = {this.state.subQuestionMarks} 
+                                totalMarksAwarded = "70" 
+                                totalMarks = "100"
+                                />
+                            <textarea 
+                                name="marks remarks" 
+                                placeholder="Remarks for the answers." 
+                                height="100%" 
+                                width="100%"
+                                /></div>
             default:
                 return <div>yet to be designed</div>
 
@@ -93,7 +116,6 @@ export default class SectionComponent extends Component{
     }
 
     render(){
-
         return(
             <div className = "section" style = {{width : this.state.width}}>
                 {this.state.heading}
