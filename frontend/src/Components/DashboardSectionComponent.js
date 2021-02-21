@@ -1,18 +1,29 @@
-import React , {Component} from "react";
+import React, { Component } from "react";
 
-export default class DashboardSectionComponent extends Component{
+export default class DashboardSectionComponent extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
-             data : props.data,
-             clickHandler : props.clickHandler
+            data: props.data,
+            clickHandler: props.clickHandler
         }
 
     }
 
-    render(){
-        return <div className = "dashboard-section" onClick = {(e)=>{this.state.clickHandler(this.state.data)}}>{this.state.data}</div>
+    static getDerivedStateFromProps(props, state) {
+        // if(props === state)
+
+        let newState = {
+            data: props.data,
+            clickHandler: props.clickHandler
+        }
+        return newState
+    }
+
+    render() {
+        return <div className="dashboard-section"
+            onClick={(e) => { this.state.clickHandler(this.state.data) }}>{this.state.data.name}</div>
     }
 }

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 
 class Professor(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE) 
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=50, null=True)
     # email = models.EmailField(max_length=50, null=True)
@@ -39,7 +39,7 @@ class Test(models.Model):
 
 class Submission(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, null=True)
-
+    name = models.CharField(max_length=50)
     answerscript_pdf = models.FileField(
         upload_to='uploads/submissions/', null=True)
     submission_time = models.DateTimeField(null=True)
