@@ -30,67 +30,29 @@ class DashboardPage extends Component {
 
     clickhandler(data) {
         this.setState((prevState) => {
-            let newSelectedfields = prevState.selectedFields
-            newSelectedfields.push(data.id)
+            let newSelectedfields = prevState.selectedFields.map(x=>x)
+            newSelectedfields.push(data)
             return {
                 curType: prevState.curType + 1,
                 selectedFields: newSelectedfields
             }
         }, this.populateData)
 
-        console.log(data)
+        // console.log(data)
 
     }
 
     populateData() {
         axios.get('/api/' + this.state.availableTypes[this.state.curType] + 's', {
             params: {
-                [this.state.availableTypes[this.state.curType - 1]]: this.state.selectedFields[this.state.selectedFields.length - 1]
+                [this.state.availableTypes[this.state.curType - 1]] : this.state.selectedFields.length!=0?this.state.selectedFields[this.state.selectedFields.length - 1].id : null
             }
         })
             .then(res => {
-                this.setState({ data: res.data }, () => { console.log(this.state.data) })
-                console.log(res.data);
+                this.setState({ data: res.data })
+                // console.log(res.data);
             })
-
-        // if (DataType === 'courses') {
-
-        // }
-        // else if (DataType === 'tests') {
-
-        // }
-        // else if (DataType === 'submissions') {
-
-        // }
     }
-
-    // populateData(data) {
-    //     if (data !== undefined) {
-
-    //         // this.setState({});           
-    //     }
-    //     if (this.state.courseId === undefined) {
-    //         axios.get('/api/courses')
-    //             .then(res => {
-    //                 this.setState({ data: res.data })
-    //                 console.log(res.data);
-    //             })
-    //     }
-    //     else if (this.state.testId === undefined) {
-    //         axios.get('/api/tests')
-    //             .then(res => {
-    //                 console.log(res.data);
-    //             })
-    //     }
-    //     else {
-    //         axios.get('/api/submissions')
-    //             .then(res => {
-    //                 console.log(res.data);
-    //             })
-    //         // submission fetch
-    //     }
-    // }
-
     componentDidMount() {
         this.populateData();
     }
