@@ -33,6 +33,6 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),
     path('', RedirectView.as_view(
-        url='api/', permanent=False), name='index')
+        url='api/', permanent=False), name='index'),
 
 ]

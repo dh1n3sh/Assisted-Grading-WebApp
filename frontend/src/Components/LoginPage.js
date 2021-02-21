@@ -1,58 +1,56 @@
-import React, {Component} from "react";
-import {Form , Input , Button} from "reactstrap";
-import axios from "axios";
+import React, { Component } from 'react';
+import '../App.css';
+import { Form, Input, Button } from "reactstrap";
 
-export default class LoginPage extends Component{
-
-    constructor(props){
-        super(props);
-
+// Notice we're importing from the file we created, not the axios package
+import axios from './axiosConfig';
+export default class LoginPage extends Component {
+    constructor(props) {
+        super(props)
         this.state = {
-            username : "",
-            pwd : ""
+            username: '',
+            password: '',
+            auth: null
         }
-
-        this.login = this.login.bind(this);
-        this.changeHandler = this.changeHandler.bind(this);
-
     }
-
-    login(event){
-        
+    // I got CSRF token missing error when I sent the request. So I think we need this.
+    setCSRF = () => {
+        axios.get('api/set-csrf/').then(res => console.log(res))
+    }
+    handleChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value })
+    }
+    handleSubmit = (event) => {
         event.preventDefault();
-
-        let { username , pwd } = this.state;
-
-        console.log(username);
-        console.log(pwd);
-
-        axios.post( "http://localhost:8000/api/login/" , {
-            "username" : username,
-            "password" : pwd
-        })
-        .then((response)=>{
-            console.log(response);
-        })
-        .catch((err)=>{console.log(err)});
-
+        axios.post('/api-auth/login/',
+            {
+                username: this.state.username,
+                password: this.state.password
+            }
+        ).then(res => {
+            this.setState({ auth: true })
+        }).catch(res => this.setState({ auth: false }))
+        console.log(this.state)
     }
-
-    changeHandler(event){
-        
-        let { name , value } = event.target;
-
-        this.setState({ [name] : value });
-    }
-
-    render(){
-        return(
+    // testEndpoint = () => {
+    //     axios.get('/api/test-auth/').then(res => this.setState(
+    //         { endpoint: true }))
+    //         .catch(res => this.setState({ endpoint: false }))
+    // }
+    render() {
+        return <div style={{ marginLeft: '20px' }}>
+            <div style={{ height: '50px' }}></div>
+            <button onClick={this.setCSRF}>Set CSRF Token</button>
+            <div>
+                {this.state.auth === null ? '' : (this.state.auth ? 'Login successful' : 'Login Failed')}
+            </div>
             <div className="page-with-form">
-                <Form onSubmit={this.login}>
-                    <Input type="text" name = "username" placeholder="username" value = {this.state.username} onChange = {this.changeHandler}/>
-                    <Input type="password" name = "pwd" placeholder="password" value = {this.state.pwd} onChange = {this.changeHandler}/>
+                <Form onSubmit={this.handleSubmit}>
+                    <Input type="text" name="username" placeholder="username" value={this.state.username} onChange={this.handleChange} />
+                    <Input type="password" name="password" placeholder="password" value={this.state.password} onChange={this.handleChange} />
                     <Button color="primary">log-in</Button>
                 </Form>
             </div>
-        );
-    }
+        </div>
+    };
 }
