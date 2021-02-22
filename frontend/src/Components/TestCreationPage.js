@@ -2,10 +2,13 @@ import React, { Component } from "react";
 import { Form, Input, Button, FormGroup, Modal , ModalBody , ModalFooter , ModalHeader} from "reactstrap";
 import SortableTree, { addNodeUnderParent, removeNodeAtPath , changeNodeAtPath } from "react-sortable-tree";
 import MyJumbotron from "./MyJumbotron";
+// import writeJsonFile from "write-json-file";
+import formData from 'form-data';
 
 // import JSONViewer from "react-json-viewer";
 // import JSONTree from "react-json-tree";
-import JSONPretty from "react-json-pretty";
+// import JSONPretty from "react-json-pretty";
+import axios from './axiosConfig';
 // import {withRouter} from "react-router-dom";
 
 class TestCreationPage extends Component {
@@ -20,7 +23,10 @@ class TestCreationPage extends Component {
                 expanded : true,
                 children : []
                 }],
-            dashboardState : this.props.location.state
+            dashboardState : this.props.location.state,
+            testname : null,
+            testdate : null,
+            zipfile : null
         }
 
         // this.state = {
@@ -53,6 +59,10 @@ class TestCreationPage extends Component {
         this.renderDeleteButton = this.renderDeleteButton.bind(this);
         this.constructFinalQpTree = this.constructFinalQpTree.bind(this);
         this.createQp = this.createQp.bind(this);
+        this.handleDataChange = this.handleDataChange.bind(this);
+        // this.checkAndPing = this.checkAndPing.bind(this);
+        this.isEmpty = this.isEmpty.bind(this);
+
         // this.togglePopup = this.togglePopup.bind(this);
     }
 
@@ -62,12 +72,54 @@ class TestCreationPage extends Component {
     //     })
     // }
 
+    isEmpty(obj){
+        if(obj === undefined || obj === null) return true;
+        let objKey = Object.keys(obj);
+        return objKey.length == 0;
+    }
+
+    handleDataChange(event){
+        let { name , value } = event.target;
+
+        this.setState({ [name] : value });
+    }
+
     createQp(){
 
         let finalQp = this.constructFinalQpTree(this.state.qp[0].children,"");
-        this.setState({
-            finalQp : finalQp
-        },);
+
+        if(this.state.testname!=null && this.state.testdate!=null && this.state.zipfile != null && !this.isEmpty(finalQp)){
+                
+            // const qptree = Buffer.from(JSON.stringify(this.state.finalQp),'utf-8');
+            var qpContent = JSON.stringify(finalQp);
+            var qpBlob = new Blob([qpContent], { type  : "application/json"});    
+            const formdata = new formData();
+
+            formdata.append('name' , document.getElementsByName('testname')[0].value);
+            formdata.append('date' , document.getElementsByName('testdate')[0].value);
+            formdata.append('qp_tree' , qpBlob );
+            formdata.append('answer_scripts' , document.getElementsByName('zipfile')[0].files[0]);
+            formdata.append('course' , this.state.dashboardState.selectedFields[0].id);
+
+            axios.post('/api/tests/',formdata)
+                .then((res)=>{
+                    // console.log(res);
+                    if(res.status==200){
+                        window.alert('Test created !');
+                        this.props.history.push('/'); 
+                    }
+                    else{
+                        window.alert("" + res.status + res.statusText);
+                    }
+                })
+                .catch((err)=>{
+                    console.log(err);
+                })
+            return;
+            // console.log(document.getElementsByName('zipfile')[0].value);
+        }
+        
+        window.alert('Please fill all the fields and create Qp Tree if not created!');
         
     }
 
@@ -104,7 +156,7 @@ class TestCreationPage extends Component {
                 this.setState({
                     qp: addNodeUnderParent({
                         treeData: this.state.qp,
-                        newNode: { qno: '-', expanded: true , marks : 0 , children : [] },
+                        newNode: { qno: null, expanded: true , marks : null , children : [] },
                         parentKey: path[path.length - 1],
                         getNodeKey: ({ treeIndex }) => treeIndex
                     }).treeData
@@ -136,10 +188,10 @@ class TestCreationPage extends Component {
             <div>
                 <MyJumbotron state = {this.state.dashboardState} history = {this.props.history} goBack = {()=>{this.props.history.push('/')}} dontRenderButton = {true}/>
                 <div className = "page-with-form">
-                <Form>
+                <Form id='id'>
                     <FormGroup>
-                        <Input type="text" placeholder="Testname" />
-                        <Input type="date" placeholder="Test-date" />
+                        <Input name="testname" type="text" placeholder="Testname" required={true} value={this.state.testname} onChange={this.handleDataChange}/>
+                        <Input name="testdate" type="date" placeholder="Test-date" required={true} value = {this.state.testdate} onChange={this.handleDataChange}/>
                         {/* <Input type="number" placeholder="noOfQno" /> */}
                     </FormGroup>
                     <div style = {{ height : '30vh'}}>
@@ -214,7 +266,7 @@ class TestCreationPage extends Component {
                         </ModalFooter>
                     </Modal> */}
                     <label>Upload Submissions zip file : </label>
-                    <Input type="file" name="zipfile" accept = '.zip,.rar'/>
+                    <Input type="file" name="zipfile" accept = '.zip,.rar' required = {true} value={this.state.zipfile} onChange={this.handleDataChange}/>
                     <Button color="primary" onClick={this.createQp}>Create Test</Button>
                 </Form>
             </div>

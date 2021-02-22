@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^12.1.10",
     "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
+    "form-data": "^4.0.0",
     "react": "^16.5.2",
     "react-client-session": "^0.0.7",
     "react-dom": "^16.5.2",
@@ -20,7 +21,8 @@
     "react-scripts": "4.0.1",
     "react-sortable-tree": "^2.8.0",
     "reactstrap": "^8.8.1",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "write-json-file": "^4.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
