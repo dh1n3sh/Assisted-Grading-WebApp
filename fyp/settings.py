@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'corsheaders',
     'rest_framework',
+    'django_q'
 ]
 
 MIDDLEWARE = [
@@ -90,6 +91,18 @@ DATABASES = {
     }
 }
 
+Q_CLUSTER = {
+    'redis': {
+        'host': 'localhost',
+        'port': 6379,
+        'db': 0,
+        'password': None,
+        'socket_timeout': None,
+        'charset': 'utf-8',
+        'errors': 'strict',
+        'unix_socket_path': None
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators

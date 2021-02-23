@@ -26,7 +26,7 @@ class SubmissionSerializer (serializers.ModelSerializer):
     class Meta:
         model = Submission
         fields = ('id', 'name', 'submission_time',
-                  'status', 'grade_tree', 'test')
+                  'status', 'grade_tree', 'test', 'answerscript_pdf', 'handwriting_verified')
 
 
 class ProfessorSerializer(serializers.ModelSerializer):

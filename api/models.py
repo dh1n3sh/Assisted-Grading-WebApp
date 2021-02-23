@@ -45,6 +45,7 @@ class Submission(models.Model):
     submission_time = models.DateTimeField(null=True)
     status = models.IntegerField(null=True)
     grade_tree = models.FileField(upload_to='uploads/grade_tree/', null=True)
+    handwriting_verified = models.BooleanField(null=True)
 
 
 # DEPRECATED
