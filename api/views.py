@@ -9,16 +9,12 @@ from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from itertools import chain
 
-from .serializers import ProfessorSerializer, CourseSerializer, TestSerializer, SubmissionSerializer, UserSerializer
-from .models import Course, Professor, Test, Submission
+from .serializers import ProfessorSerializer, CourseSerializer, TestSerializer, SubmissionSerializer, UserSerializer, StudentSerializer
+from .models import Course, Professor, Test, Submission, Student
 
 import sys
-import os
-sys.path.append(os.path.abspath(
-    os.path.join(os.path.dirname(__file__), 'jobs')))
 
-from test_create_job import make_submissions
-
+from api.jobs.test_create_job import make_submissions
 def auth(user):
 
     if isinstance(user, AnonymousUser):
@@ -241,6 +237,9 @@ class MyProfessorView(viewsets.ModelViewSet):
         return Response(serializer.data)
         # return profLoggedIn
 
+class StudentView(viewsets.ModelViewSet):
+    serializer_class = StudentSerializer
+    queryset = Student.objects.all()
 
 def index(request):
     return HttpResponse("Hello, world. You're at the api index.")

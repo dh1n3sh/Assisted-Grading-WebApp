@@ -11,6 +11,13 @@ class Professor(models.Model):
     # email = models.EmailField(max_length=50, null=True)
     department = models.CharField(max_length=20, null=True)
 
+class Student(models.Model):
+    roll = models.CharField(max_length=50, null=True)
+    name = models.CharField(max_length=50, null=True)
+    handwriting_model = models.FileField(
+        upload_to='uploads/handwriting/',
+        null=True)
+
 
 class Course(models.Model):
     professor = models.ForeignKey(

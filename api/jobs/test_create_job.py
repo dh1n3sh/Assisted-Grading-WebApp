@@ -3,7 +3,12 @@ from api.models import Submission, Test
 import os
 from tempfile import TemporaryDirectory
 from django.core.files.base import File, ContentFile
-
+from .handwriting import verify_handwriting
+from .segment_pdf import generate_grade_tree
+from api.config import *
+import logging
+logger = logging.getLogger()
+# finish logger
 
 def make_submissions(test):
     '''
@@ -11,21 +16,21 @@ def make_submissions(test):
     PARAMS
         test: Test object
     '''
-    from zipfile import ZipFile
-    from api.models import Submission, Test
-    from tempfile import TemporaryDirectory
-    from django.core.files import File
+    # from zipfile import ZipFile
+    # from api.models import Submission, Test
+    # from tempfile import TemporaryDirectory
+    # from django.core.files import File
+
 
     zip_path = test.answer_scripts
 
     with TemporaryDirectory() as tmpdirname:
-        print('created temporary directory', tmpdirname)
+        logger.info('created temporary directory '+ tmpdirname)
         with ZipFile(zip_path, 'r') as zip_ref:
             zip_ref.extractall(tmpdirname)
 
         for name in os.listdir(tmpdirname):
-            print(name)
-
+            logger.info('processing pdf '+name+' for test '+str(test.id))
             pdf_file = os.path.join(tmpdirname, name)
             # run ML
             new_sub = Submission(
@@ -39,24 +44,15 @@ def make_submissions(test):
             new_sub.save()
 
             # run handwriting verification
-            student_class = name.split('-')[0]
-            new_sub.handwriting_verified =  verify_handwriting(student_class, 'a')
+            student_class = name.split('.')[0] #remove extension like .pdf
+            student_class = student_class.split(PDF_NAME_DELIMITER)[0] #split and take first obj
+            new_sub.handwriting_verified =  verify_handwriting(student_class, new_sub.answerscript_pdf)
             new_sub.save()
+
             # run dhsegment
             grade_tree = generate_grade_tree("answerscript_pdf")
             new_sub.grade_tree.save(name+'grade.json', ContentFile(grade_tree))
-            print(new_sub)
 
-
-def verify_handwriting(student_class, answerscript_pdf):
-    '''
-    return whether handwriting in pdf corresponds to student.
-    '''
-    return True
-
-
-def generate_grade_tree(answerscript_pdf):
-    return "{'1': '2'}"
 
 
 if __name__ == 'django.core.management.commands.shell':
