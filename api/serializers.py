@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Course, Test, Professor, Submission
+from .models import Course, Test, Professor, Submission, Student
 from django.contrib.auth.models import User
 
 
@@ -26,7 +26,7 @@ class SubmissionSerializer (serializers.ModelSerializer):
     class Meta:
         model = Submission
         fields = ('id', 'name', 'submission_time',
-                  'status', 'grade_tree', 'test')
+                  'status', 'grade_tree', 'test', 'answerscript_pdf', 'handwriting_verified')
 
 
 class ProfessorSerializer(serializers.ModelSerializer):
@@ -36,3 +36,9 @@ class ProfessorSerializer(serializers.ModelSerializer):
         model = Professor
         fields = ('id', 'name', 'department', 'user')
         # depth = 2
+
+class StudentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Student
+        fields = ('id', 'roll', 'name', 'handwriting_model')

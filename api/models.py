@@ -11,6 +11,13 @@ class Professor(models.Model):
     # email = models.EmailField(max_length=50, null=True)
     department = models.CharField(max_length=20, null=True)
 
+class Student(models.Model):
+    roll = models.CharField(max_length=50, null=True)
+    name = models.CharField(max_length=50, null=True)
+    handwriting_model = models.FileField(
+        upload_to='uploads/handwriting/',
+        null=True)
+
 
 class Course(models.Model):
     professor = models.ForeignKey(
@@ -45,6 +52,7 @@ class Submission(models.Model):
     submission_time = models.DateTimeField(null=True)
     status = models.IntegerField(null=True)
     grade_tree = models.FileField(upload_to='uploads/grade_tree/', null=True)
+    handwriting_verified = models.BooleanField(null=True)
 
 
 # DEPRECATED
