@@ -4,58 +4,89 @@ import logging
 import tensorflow as tf 
 import numpy as np 
 
-from PIL import Image   
-import cv2 
+from PIL import Image, ImageOps, UnidentifiedImageError 
 import os 
 import shutil 
+import math 
+
+import string 
+import random 
+from pdf2image import convert_from_path
 
 logger = logging.getLogger()
 
 def pdfToImages (pdf):  
-    pass 
-
-def padLen (img, r, c, stripLen): 
     
-    padded = np.zeros ((r, stripLen, 1)) 
-    
-    if (c >= stripLen):
-        padded[:][:] = img[:][:stripLen]   
-        return padded 
-
-    padded[:][:c] = img[:][:] 
-    padded[:][c:] = 255 
-
-    return padded 
-
-def imageToStrips (imagePaths):
-
-    strips = 0 
-    stripLen, stripWidth = 1000,500 
-    
-    for path in imagePaths: 
-        img = cv2.imread (path, 0)
-        if (img is None):
+    #create random folder 
+    while True: 
+        
+        N = 7 
+        res = ''.join(random.choices(string.ascii_uppercase +
+                                string.digits, k = N))
+        folderName = str(res)
+        try:
+            os.mkdir (folderName)
+        except FileExistsError: 
             continue 
 
-        r,c = img.shape[0], img.shape[1] 
-        strips += r//stripWidth 
-
-    test_images = np.zeros ((strips, stripWidth, stripLen, 1)) 
-    k = 0 
-    for path in imagePaths: 
-
-        img = cv2.imread (path, 0)
-        if (img is None):
-            continue 
-
-        r,c = img.shape[0], img.shape[1] 
-        for i in range (r//stripWidth): 
-            test_images[k] = padLen(img[i*stripWidth: (i+1)*stripWidth][:], r, c, stripLen)  
-            k += 1
-
-    test_images = test_images/255.0 
-    return test_images 
+        break 
     
+    #TODO: extract images to output folder folderName 
+
+    paths = list() 
+    for picture in os.listdir (folderName) :
+        paths.append (folderName + "/" + picture) 
+
+    paths.append (folderName) 
+    return paths 
+
+def crop (path, stripLen, stripWidth, counter, array):  
+
+  im = Image.open (path) 
+  im = ImageOps.grayscale (im) 
+  imgwidth, imgheight = im.size
+
+  for i in range (0, imgheight, stripLen): 
+
+    box = (0, i, stripWidth, i+stripLen) 
+    a = im.crop(box)
+    data = np.array (a) 
+    data = data.reshape ((data.shape[0], data.shape[1], 1))  
+
+    array[counter[0]] = data 
+    counter[0] += 1 
+
+def imagesToStrips(paths):  
+    
+  count = 0 
+  stripLen, stripWidth = 500, 1000
+  paths = os.listdir() 
+
+  for p in paths:
+
+    try:
+      im = Image.open (p) 
+    except UnidentifiedImageError: 
+      continue 
+
+    im = ImageOps.grayscale (im) 
+    imgwidth, imgheight = im.size
+
+    for i in range (0, imgheight, stripLen): 
+      count += 1
+ 
+  array = np.zeros ((count, stripLen, stripWidth, 1)) 
+  counter = [0] 
+
+  for p in paths:
+    try:  
+      crop (p, stripLen, stripWidth, counter, array) 
+    except UnidentifiedImageError:
+      continue 
+  
+  array = array/255.0 
+  return array 
+
 def verify_handwriting(model_path, answerscript_pdf):
     '''
     return whether handwriting in pdf corresponds to student.
@@ -66,32 +97,20 @@ def verify_handwriting(model_path, answerscript_pdf):
     # loadmodel
     model = tf.keras.models.load_model(model_path) 
 
-    # open pdf and pre process into 500*1000*1 strips
-    # Fill paths aptly  
-
-    # test_images = np.zeros ((len(paths), 500, 1000, 1)) 
-    
-    # for i in range (len(paths)): 
-
-    #     path = paths[i] 
-    #     img = Image.open (path) 
-    #     data = np.array(img) 
-    #     data = data.reshape ((data.shape[0], data.shape[1], 1)) 
-
-    #     test_images[i] = data  
-    
-    # test_images = test_images/255.0 
-    
     paths = pdfToImages (answerscript_pdf) 
-    test_images = imageToStrips (paths) 
+    tempFolder = paths.pop() 
+    test_images = imagesToStrips (paths)  
+
     y_pred = model.predict_classes (test_images)  
-  
-    logger.info('model '+str(model_path)+student_class)
     score = sum(y_pred)/len(y_pred)
 
-    #Set threshold 
-    threshold = 0.5 
+    #Remove temp folder 
+    shutil.rmtree (tempFolder) 
 
+    #Set threshold 
+    # logger.info('model '+str(model_path)+student_class)
+
+    threshold = 0.5 
     if (score >= threshold): 
         return True 
     else:
