@@ -13,6 +13,8 @@ import math
 
 from pdf2image import convert_from_path
 
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+
 # from django.conf import settings
 
 logger = logging.getLogger()
