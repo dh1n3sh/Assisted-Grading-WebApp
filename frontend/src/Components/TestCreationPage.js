@@ -3,7 +3,7 @@ import { Form, Input, Button, FormGroup, Modal , ModalBody , ModalFooter , Modal
 import SortableTree, { addNodeUnderParent, removeNodeAtPath , changeNodeAtPath } from "react-sortable-tree";
 import MyJumbotron from "./MyJumbotron";
 // import writeJsonFile from "write-json-file";
-import formData from 'form-data';
+import FormData from 'form-data';
 
 // import JSONViewer from "react-json-viewer";
 // import JSONTree from "react-json-tree";
@@ -93,11 +93,11 @@ class TestCreationPage extends Component {
             // const qptree = Buffer.from(JSON.stringify(this.state.finalQp),'utf-8');
             var qpContent = JSON.stringify(finalQp);
             var qpBlob = new Blob([qpContent], { type  : "application/json"});    
-            const formdata = new formData();
+            const formdata = new FormData();
 
             formdata.append('name' , document.getElementsByName('testname')[0].value);
             formdata.append('date' , document.getElementsByName('testdate')[0].value);
-            formdata.append('qp_tree' , qpBlob );
+            formdata.append('qp_tree' , qpBlob , this.state.testname+'_qp_tree.json');
             formdata.append('answer_scripts' , document.getElementsByName('zipfile')[0].files[0]);
             formdata.append('course' , this.state.dashboardState.selectedFields[0].id);
 

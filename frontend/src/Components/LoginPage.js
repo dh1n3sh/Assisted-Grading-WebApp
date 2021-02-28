@@ -42,7 +42,7 @@ class LoginPage extends Component {
                 password: this.state.password
             }
         ).then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             let authValue = typeof(res.data)=="object" ? true : false;
             this.setState({ auth: authValue });
         })

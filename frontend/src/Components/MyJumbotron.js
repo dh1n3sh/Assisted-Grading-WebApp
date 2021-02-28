@@ -7,6 +7,7 @@ class MyJumbotron extends Component {
 
     // console.log(props);
     render() {
+        // console.log(this.props)
 
         // console.log(this.props.state.selectedFields);
         return <Jumbotron fluid>

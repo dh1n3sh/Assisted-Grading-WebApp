@@ -7,6 +7,7 @@ export default class DashboardSectionComponent extends Component {
 
         this.state = {
             data: props.data,
+            type : props.type,
             clickHandler: props.clickHandler
         }
 
@@ -17,6 +18,7 @@ export default class DashboardSectionComponent extends Component {
 
         let newState = {
             data: props.data,
+            type : props.type,
             clickHandler: props.clickHandler
         }
         return newState
@@ -24,6 +26,6 @@ export default class DashboardSectionComponent extends Component {
 
     render() {
         return <div className="dashboard-section"
-            onClick={(e) => { this.state.clickHandler(this.state.data) }}>{this.state.data.name}</div>
+            onClick={(e) => { this.state.clickHandler(this.state.data) }}>{this.state.data.name}<img src="../../public/delete-24px.svg"/></div>
     }
 }
