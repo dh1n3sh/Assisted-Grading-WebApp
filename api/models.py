@@ -14,10 +14,10 @@ class Professor(models.Model):
 class Student(models.Model):
     roll = models.CharField(max_length=50, null=True)
     name = models.CharField(max_length=50, null=True)
-    handwriting_model = models.FileField(
+    handwriting_model_zip = models.FileField(
         upload_to='uploads/handwriting/',
         null=True)
-
+    handwriting_model_path = models.CharField(max_length=300, null=True)
 
 class Course(models.Model):
     professor = models.ForeignKey(

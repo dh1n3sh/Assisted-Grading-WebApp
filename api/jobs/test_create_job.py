@@ -1,5 +1,5 @@
 from zipfile import ZipFile
-from api.models import Submission, Test
+from api.models import Submission, Test, Student
 import os
 from tempfile import TemporaryDirectory
 from django.core.files.base import File, ContentFile
@@ -46,8 +46,19 @@ def make_submissions(test):
             # run handwriting verification
             student_class = name.split('.')[0] #remove extension like .pdf
             student_class = student_class.split(PDF_NAME_DELIMITER)[0] #split and take first obj
-            new_sub.handwriting_verified =  verify_handwriting(student_class, new_sub.answerscript_pdf)
-            new_sub.save()
+            print("roll ", student_class)
+            students = Student.objects.filter(roll = student_class)
+
+            if len(students)>0:
+                student = students[0]
+                print(student.handwriting_model_path)
+                if not student.handwriting_model_path:
+                    # lazy extract and save
+                    pass
+                model_path = student.handwriting_model_path
+                new_sub.handwriting_verified =  verify_handwriting(model_path, new_sub.answerscript_pdf.path)
+                print(student.handwriting_model_path, new_sub.handwriting_verified)
+                new_sub.save()
 
             # run dhsegment
             grade_tree = generate_grade_tree("answerscript_pdf")

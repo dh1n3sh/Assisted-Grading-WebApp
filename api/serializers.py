@@ -41,4 +41,4 @@ class StudentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ('id', 'roll', 'name', 'handwriting_model')
+        fields = ('id', 'roll', 'name', 'handwriting_model_zip', 'handwriting_model_path')

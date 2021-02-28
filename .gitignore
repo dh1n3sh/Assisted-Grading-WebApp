@@ -131,3 +131,6 @@ dmypy.json
 uploads/
 
 frontend/node_modules/
+
+api/fixtures/model/
+api/fixtures/model.zip
