@@ -3,41 +3,30 @@ import logging
 
 import tensorflow as tf 
 import numpy as np 
+import tempfile
 
 from PIL import Image, ImageOps, UnidentifiedImageError 
 import os 
 import shutil 
 import math 
 
-import string 
-import random 
 from pdf2image import convert_from_path
 
 logger = logging.getLogger()
 
-def pdfToImages (pdf):  
+def pdfToImages (pdf, folderName):   
     
-    #create random folder 
-    while True: 
-        
-        N = 7 
-        res = ''.join(random.choices(string.ascii_uppercase +
-                                string.digits, k = N))
-        folderName = str(res)
-        try:
-            os.mkdir (folderName)
-        except FileExistsError: 
-            continue 
-
-        break 
-    
-    #TODO: extract images to output folder folderName 
+    #extract images to output folder folderName 
+    pdf = convert_from_path (pdf) 
+    cnt = 1 
+    for page in pdf :
+        page.save (os.path.join (folderName, str(cnt)+".jpg"), "JPEG")  
+        cnt += 1    
 
     paths = list() 
     for picture in os.listdir (folderName) :
-        paths.append (folderName + "/" + picture) 
+        paths.append (os.path.join(folderName, picture))  
 
-    paths.append (folderName) 
     return paths 
 
 def crop (path, stripLen, stripWidth, counter, array):  
@@ -96,21 +85,20 @@ def verify_handwriting(model_path, answerscript_pdf):
     '''
     # loadmodel
     model = tf.keras.models.load_model(model_path) 
+    score = 0 
 
-    paths = pdfToImages (answerscript_pdf) 
-    tempFolder = paths.pop() 
-    test_images = imagesToStrips (paths)  
+    with tempfile.TemporaryDirectory() as tmpdirname: 
+        
+        paths = pdfToImages (answerscript_pdf, tmpdirname)  
+        test_images = imagesToStrips (paths)  
 
-    y_pred = model.predict_classes (test_images)  
-    score = sum(y_pred)/len(y_pred)
-
-    #Remove temp folder 
-    shutil.rmtree (tempFolder) 
+        y_pred = model.predict_classes (test_images)  
+        score = sum(y_pred)/len(y_pred)
 
     #Set threshold 
     # logger.info('model '+str(model_path)+student_class)
-
     threshold = 0.5 
+
     if (score >= threshold): 
         return True 
     else:
