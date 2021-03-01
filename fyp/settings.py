@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,11 +28,21 @@ SECRET_KEY = '7@--w3s7xqct^p=*_e4er%i9yf3=u44py8rxpbjsx!73w(2t^@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-
+# ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'assisted-grading.herokuapp.com',
+    'f1d2d3712e2a.ngrok.io']
+# CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOW_ALL_ORIGINS = True
 # Application definition
+from corsheaders.defaults import default_headers
 
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'Access-Control-Allow-Origin',
+]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000","https://f1d2d3712e2a.ngrok.io","https://dhinesh.ml"
+]
+CORS_ALLOW_CREDENTIALS = True
 INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'assisted_grading.apps.AssistedGradingConfig',
@@ -87,14 +98,15 @@ LOGGING = {
     },
 }
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+    
 ]
 
 ROOT_URLCONF = 'fyp.urls'
@@ -190,3 +202,4 @@ STATICFILES_DIRS = [
 # CORS_ORIGIN_WHITELIST = (
 #     'https://localhost:3000'
 # )
+django_heroku.settings(locals())
