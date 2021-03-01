@@ -7,5 +7,5 @@ def generate_grade_tree(answerscript_pdf):
         stringified gradetree
     '''
     grade_tree = {1: '2'}
-    return str(grade_tree)
+    return open('api/fixtures/grade_tree.json').read()
 
