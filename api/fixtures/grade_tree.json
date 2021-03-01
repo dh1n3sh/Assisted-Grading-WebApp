@@ -3,12 +3,14 @@
         "a": [
             "sample remarks",
             0,
+            10,
             "/segmented_images/1_a.jpg",
             "/uploads/processed_images/1237651/"
         ],
         "b": [
             "sample remarks",
             0,
+            10,
             "/segmented_images/1_b.jpg",
             "/uploads/processed_images/1237651/"
         ]
@@ -16,6 +18,7 @@
     "2": [
         "sample remarks",
         0,
+        20,
         "/segmented_images/2.jpg",
         "/uploads/processed_images/9812/"
     ],
@@ -23,12 +26,14 @@
         "a" : [
             "sample remarks",
             0,
+            10,
             "/segmented_images/5_a.jpg",
             "/uploads/processed_images/4342/"
         ],
         "b" : [
             "sample remarks",
             0,
+            10,
             "/segmented_images/5_b.jpg",
             "/uploads/processed_images/4342/"
         ],
@@ -36,12 +41,14 @@
             "i": [
                 "sample remarks",
                 0,
+                5,
                 "/segmented_images/5_c_i.jpg",
                 "/uploads/processed_images/4342/"
             ],
             "ii": [
                 "sample remarks",
                 0,
+                5,
                 "/segmented_images/5_c_ii.jpg",
                 "/uploads/processed_images/6712/"
             ]
