@@ -184,6 +184,7 @@ USE_TZ = True
 STATIC_URL = '/uploads/'
 STATICFILES_DIRS = [
     BASE_DIR / "uploads",
+    "/segmented_images/"
 ]
 
 # CORS_ORIGIN_WHITELIST = (
