@@ -35,7 +35,7 @@ def make_submissions(test):
             logger.info('processing pdf '+file+' for test '+str(test.id))
             pdf_file = os.path.join(tmpdirname, file)
             name = file.split('.')[0] #remove extension like .pdf
-            # run ML
+            
             new_sub = Submission(
                 test=test,
                 name=name,
@@ -43,18 +43,18 @@ def make_submissions(test):
                 grade_tree=None
             )
             with open(pdf_file, 'rb') as doc_file:
-                new_sub.answerscript_pdf.save(file, File(doc_file), save=True)
-            new_sub.save()
+                new_sub.answerscript_pdf.save(file, File(doc_file), save=False)
+            
 
             # run handwriting verification
-            # student_class = 
             student_roll = name.split(PDF_NAME_DELIMITER)[0] #split and take first obj
-            print("roll ", student_roll)
+            print("Processing student submission with roll :", student_roll)
             students = Student.objects.filter(roll = student_roll)
 
-            if len(students)>0:
+            # TODO : consider len == 1 to get a unique student
+            if len(students)>0: 
+
                 student = students[0]
-                print(student.handwriting_model_path)
                 model_path = student.handwriting_model_path
 
                 if not student.handwriting_model_path and student.handwriting_model_zip:
@@ -63,25 +63,33 @@ def make_submissions(test):
                     if not os.path.exists(model_path):
                         os.makedirs(model_path)
                     with ZipFile(student.handwriting_model_zip, 'r') as zip:
-                        # contents = zip.namelist()
+
                         zip.extractall(model_path)
                         contents = os.listdir(model_path)
-                        # print(contents)
+
                         if len(contents)==1:
-                            # zip.extract(contents[0],model_path)
+                            # zip contains a folder which contains model files
                             model_path = os.path.join(model_path, contents[0])
+                        elif len(contents) == 3:
+                            # zip contains model files in root
+                            continue
                         else:
+                            # zip contains model in unknown structure or doesn't contain the model
                             shutil.rmtree(model_path)
 
                     
                 if model_path:
+                    student.handwriting_model_path = model_path
+                    student.save()
                     new_sub.handwriting_verified =  verify_handwriting(model_path, new_sub.answerscript_pdf.path)
                     print(student.handwriting_model_path, new_sub.handwriting_verified)
-                    new_sub.save()
+                    
 
             # run dhsegment
             grade_tree = generate_grade_tree("answerscript_pdf")
-            new_sub.grade_tree.save(name+'grade.json', ContentFile(grade_tree))
+            new_sub.grade_tree.save(name+'grade.json', ContentFile(grade_tree), save = False)
+
+            new_sub.save()
 
 
 
