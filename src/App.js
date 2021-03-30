@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Redirect, Route,Switch } from "react-router-dom";
+import { HashRouter as Router, Redirect, Route,Switch } from "react-router-dom";
 
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -26,12 +26,13 @@ class App extends Component {
     ReactSession.setStoreType("localStorage");
 
     return (
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <Switch>
           <PrivateRoute path="/grading" component={GradingPage} />
           <PrivateRoute path="/test-creation" component={TestCreationPage} />
           <LoginRoute path="/login" component={LoginPage} />
           {/* <Route exact path="/login2" component={LoginPage2} /> */}
+
           <PrivateRoute exact path="/" component={DashboardPage} />
         </Switch>
       </Router>

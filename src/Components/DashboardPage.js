@@ -94,7 +94,7 @@ class DashboardPage extends Component {
     }
 
     populateData() {
-        axios.get('/api/' + this.state.availableTypes[this.state.curType] + 's', {
+        axios.get('/api/' + this.state.availableTypes[this.state.curType] + 's/', {
             params: {
                 [this.state.availableTypes[this.state.curType - 1]]: this.state.selectedFields.length != 0 ? this.state.selectedFields[this.state.selectedFields.length - 1].id : null
             }
