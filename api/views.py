@@ -8,7 +8,8 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from itertools import chain
-
+from django.views.generic import TemplateView
+from django.views.decorators.cache import never_cache
 from .serializers import ProfessorSerializer, CourseSerializer, TestSerializer, SubmissionSerializer, UserSerializer, StudentSerializer
 from .models import Course, Professor, Test, Submission, Student
 
@@ -21,6 +22,8 @@ def auth(user):
         raise PermissionDenied
 
     return Professor.objects.filter(user=user)[0]
+
+index = never_cache(TemplateView.as_view(template_name='index.html'))
 
 
 class CourseView(viewsets.ModelViewSet):
@@ -241,5 +244,5 @@ class StudentView(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
     queryset = Student.objects.all()
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the api index.")
+# def index(request):
+#     return HttpResponse("Hello, world. You're at the api index.")
