@@ -161,3 +161,4 @@ yarn-error.log*
 
 .eslintcache
 staticfiles/
+media/

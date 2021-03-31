@@ -28,6 +28,16 @@ SECRET_KEY = '7@--w3s7xqct^p=*_e4er%i9yf3=u44py8rxpbjsx!73w(2t^@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# AWS S3 SETTINGS
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_URL = os.environ.get('AWS_URL')
+AWS_DEFAULT_ACL = None
+USE_S3 = os.getenv('USE_S3') == 'TRUE'
+
+# AWS_S3_REGION_NAME = 'us-east-2'
+# AWS_S3_SIGNATURE_VERSION = 's3v4'
 # ALLOWED_HOSTS = ["*"]
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'assisted-grading.herokuapp.com',
     'f1d2d3712e2a.ngrok.io']
@@ -56,7 +66,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'django_q',
-    'api.jobs'
+    'api.jobs',
+    'storages',
 ]
 
 LOGGING = {
@@ -224,4 +235,11 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build/static'),os.path.join(BASE_DIR
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
+if USE_S3:
+    MEDIA_URL = AWS_URL + '/media/'
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    print('using s3')
+else:
+    print('not using s3')
+    print(os.getenv('USE_S3'))
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
