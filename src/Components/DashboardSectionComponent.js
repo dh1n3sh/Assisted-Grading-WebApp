@@ -82,7 +82,7 @@ export default class DashboardSectionComponent extends Component {
 
                 <Card.Img style={{ position: "relative" }} variant="top" className="img-card img-card-small" />
                 <div className="blue-circle-icon">
-                    <img src={"./icons8-delete-bin-24-white.png"}
+                    <img src={"/static/icons8-delete-bin-24-white.png"}
                         alt="live-icon"
                         className="icon-tag"
                         onClick={this.deleteBtn} />

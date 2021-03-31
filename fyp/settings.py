@@ -145,18 +145,26 @@ DATABASES = {
     }
 }
 
-Q_CLUSTER = {
-    'redis': {
-        'host': 'localhost',
-        'port': 6379,
-        'db': 0,
-        'password': None,
-        'socket_timeout': None,
-        'charset': 'utf-8',
-        'errors': 'strict',
-        'unix_socket_path': None
+if os.environ.get("REDIS_URL") is not None:
+    Q_CLUSTER = {
+        'name': 'django_q_django',
+        # omitted for brevity  
+        'label': 'Django Q',
+        'redis': os.environ.get("REDIS_URL")
     }
-}
+else:
+    Q_CLUSTER = {
+        'redis': {
+            'host': 'localhost',
+            'port': 6379,
+            'db': 0,
+            'password': None,
+            'socket_timeout': None,
+            'charset': 'utf-8',
+            'errors': 'strict',
+            'unix_socket_path': None
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -210,7 +218,7 @@ django_heroku.settings(locals())
 STATIC_URL = '/static/'
 # Place static in the same location as webpack build files
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build/static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build/static'),os.path.join(BASE_DIR, 'public')]
 
 # If you want to serve user uploaded files add these settings
 MEDIA_URL = '/media/'

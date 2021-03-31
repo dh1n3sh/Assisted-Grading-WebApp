@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -136,7 +135,6 @@ frontend/node_modules/
 api/fixtures/model/
 api/fixtures/model.zip
 # api/fixtures/
-=======
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
@@ -162,4 +160,4 @@ yarn-debug.log*
 yarn-error.log*
 
 .eslintcache
->>>>>>> master-holder
+staticfiles/
