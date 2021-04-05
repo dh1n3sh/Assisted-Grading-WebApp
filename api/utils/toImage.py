@@ -32,7 +32,7 @@ def convert_batch_pdfs_to_images(ip_dir, op_dir):
         if singlefile not in infodict["filesdone"] and singlefile.endswith('.pdf'):
             filecnt = infodict["counter"] + 1
             infodict["filesdone"].append(singlefile)
-            pdf = convert_from_path(os.path.join(ip_dir, singlefile))
+            pdf = convert_from_path(os.path.join(ip_dir, singlefile), dpi=300)
             cnt = 1
             for page in pdf:
                 page.save(os.path.join(op_dir, str(
@@ -56,7 +56,7 @@ def convert_single_pdf_to_images(pdf_path, op_dir):
     if not os.path.exists(op_dir):
         os.makedirs(op_dir)
 
-    pdf = convert_from_path(pdf_path)
+    pdf = convert_from_path(pdf_path, dpi=300)
     cnt = 1
     for page in pdf:
         page.save(os.path.join(op_dir,str(cnt)+".jpg"), "JPEG")

@@ -38,7 +38,7 @@ def buildGradeTree(answer_dict, dest, q = ''):
     
     if isinstance(answer_dict, list):
         i = 0
-        child = [None,0,0,[]]
+        child = ["",0,0,[]]
         for image_obj in answer_dict:
             img = Image.open(image_obj[0])
             width, height = img.size 
@@ -95,7 +95,11 @@ def generate_grade_tree(answerscript_pdf, qp_tree_path, submission):
 
         result = texttractRawResponse(image_full_path,textract)
         # bbi = getBBox(image_full_path, mmdet_model)
-
+        text = ''
+        for item in result["Blocks"]:
+            if item["BlockType"] == "LINE":
+                text += item["Text"]
+        print('TEXTTRACT',text)
 
         files = {"answer_image": (image_file, open(image_full_path, 'rb'))}
 
@@ -147,5 +151,5 @@ def generate_grade_tree(answerscript_pdf, qp_tree_path, submission):
         str(submission.test.id), str(submission.id))
     if not os.path.exists(dest):
         os.makedirs(dest)
-    return str(buildGradeTree(answer_dict, dest))
+    return json.dumps(buildGradeTree(answer_dict, dest),indent=2)
 

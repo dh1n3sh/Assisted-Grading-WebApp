@@ -92,23 +92,31 @@ class AnswerTree:
       temp = temp.parent 
     
     if (dest not in temp.children): 
-      return  
+      return False 
     
     self.curr = temp.children[dest] 
 
     if (len(self.curr.children) != 0): 
-      return 
+      return False
 
     self.addPageDetailsToNode (self.curr.snippet, pages, box, boxNext) 
-  
-  def validate(self, nextBox):
+    return True
+
+  def validate(self, curBox, nextBox):
+
     dest = nextBox.ocr
-    temp = self.curr
-    
+    if curBox.ocr in self.curr.children:
+      temp = self.curr.children[curBox.ocr]
+    else:
+      temp = self.curr
+    print('current node has children',temp.children)
     while (dest not in temp.children) and temp!=self.root:  
+      print('going up')
       temp = temp.parent 
+      print('current node has children',temp.children)
     
     if (dest not in temp.children): 
+      print(temp.children)
       return False
     
     return True
@@ -117,12 +125,17 @@ class AnswerTree:
 
     boxes.sort() 
     self.reset() 
-
+    # 1 a 
+    # | | |
     curBox = boxes[0]
     for i in range (len(boxes)-1): 
-      if(self.validate(boxes[i+1])):
-        self._insert (curBox, pages, boxes[i+1])
+      if(self.validate(curBox, boxes[i+1])):
+        print('inserting ',boxes[i+1],'after',curBox)
+        print(self._insert (curBox, pages, boxes[i+1]))
         curBox = boxes[i+1] 
+      else:
+        print('skipping',boxes[i+1],'after',curBox)
+
     self._insert (curBox, pages)  
 
   
