@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,11 +28,31 @@ SECRET_KEY = '7@--w3s7xqct^p=*_e4er%i9yf3=u44py8rxpbjsx!73w(2t^@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# AWS S3 SETTINGS
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_URL = os.environ.get('AWS_URL')
+AWS_DEFAULT_ACL = None
+USE_S3 = os.getenv('USE_S3') == 'TRUE'
 
-
+# AWS_S3_REGION_NAME = 'us-east-2'
+# AWS_S3_SIGNATURE_VERSION = 's3v4'
+# ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'assisted-grading.herokuapp.com',
+    'f1d2d3712e2a.ngrok.io']
+# CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOW_ALL_ORIGINS = True
 # Application definition
+from corsheaders.defaults import default_headers
 
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'Access-Control-Allow-Origin',
+]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000","https://f1d2d3712e2a.ngrok.io","https://dhinesh.ml"
+]
+CORS_ALLOW_CREDENTIALS = True
 INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'assisted_grading.apps.AssistedGradingConfig',
@@ -45,7 +66,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'django_q',
-    'api.jobs'
+    'api.jobs',
+    'storages',
 ]
 
 LOGGING = {
@@ -87,14 +109,16 @@ LOGGING = {
     },
 }
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Whitenoise Middleware
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+    
 ]
 
 ROOT_URLCONF = 'fyp.urls'
@@ -102,7 +126,7 @@ ROOT_URLCONF = 'fyp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -132,18 +156,26 @@ DATABASES = {
     }
 }
 
-Q_CLUSTER = {
-    'redis': {
-        'host': 'localhost',
-        'port': 6379,
-        'db': 0,
-        'password': None,
-        'socket_timeout': None,
-        'charset': 'utf-8',
-        'errors': 'strict',
-        'unix_socket_path': None
+if os.environ.get("REDIS_URL") is not None:
+    Q_CLUSTER = {
+        'name': 'django_q_django',
+        # omitted for brevity  
+        'label': 'Django Q',
+        'redis': os.environ.get("REDIS_URL")
     }
-}
+else:
+    Q_CLUSTER = {
+        'redis': {
+            'host': 'localhost',
+            'port': 6379,
+            'db': 0,
+            'password': None,
+            'socket_timeout': None,
+            'charset': 'utf-8',
+            'errors': 'strict',
+            'unix_socket_path': None
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -190,3 +222,24 @@ STATICFILES_DIRS = [
 # CORS_ORIGIN_WHITELIST = (
 #     'https://localhost:3000'
 # )
+django_heroku.settings(locals())
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.1/howto/static-files/
+STATIC_URL = '/static/'
+# Place static in the same location as webpack build files
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build/static'),os.path.join(BASE_DIR, 'public')]
+
+# If you want to serve user uploaded files add these settings
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
+if USE_S3:
+    MEDIA_URL = AWS_URL + '/media/'
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    print('using s3')
+else:
+    print('not using s3')
+    print(os.getenv('USE_S3'))
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

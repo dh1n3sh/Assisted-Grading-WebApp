@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
 from django.conf.urls.static import static
+from django.conf import settings
 
 from rest_framework import routers
 from django.views.generic.base import RedirectView
@@ -37,7 +38,10 @@ urlpatterns = [
     path('grading/', include('assisted_grading.urls')),
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),
-    path('', RedirectView.as_view(
-        url='api/', permanent=False), name='index'),
+    path('', views.index, name='index'),
+    # path('', RedirectView.as_view(
+    #     url='api/', permanent=False), name='index'),
     
 ] + static('/segmented_images/', document_root='segmented_images')
+urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+
