@@ -8,6 +8,7 @@ from .segment_pdf import generate_grade_tree
 from api.config import *
 from fyp.settings import HANDWRITING_MODELS_DIR
 import logging
+from django.conf import settings
 logger = logging.getLogger()
 # finish logger
 
@@ -25,7 +26,7 @@ def make_submissions(test):
 
 
     zip_path = test.answer_scripts
-
+    qp_tree_path = test.qp_tree.path
     with TemporaryDirectory() as tmpdirname:
         logger.info('created temporary directory '+ tmpdirname)
         with ZipFile(zip_path, 'r') as zip_ref:
@@ -42,8 +43,9 @@ def make_submissions(test):
                 status=0,
                 grade_tree=None
             )
+            new_sub.save()
             with open(pdf_file, 'rb') as doc_file:
-                new_sub.answerscript_pdf.save(file, File(doc_file), save=False)
+                new_sub.answerscript_pdf.save(file, File(doc_file))
             
 
             # run handwriting verification
@@ -86,9 +88,8 @@ def make_submissions(test):
                     
 
             # run dhsegment
-            grade_tree = generate_grade_tree("answerscript_pdf")
+            grade_tree = generate_grade_tree(new_sub.answerscript_pdf.path, qp_tree_path, new_sub)
             new_sub.grade_tree.save(name+'grade.json', ContentFile(grade_tree), save = False)
-
             new_sub.save()
 
 

@@ -13,12 +13,15 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import os
 import django_heroku
-
+import boto3
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-HANDWRITING_MODELS_DIR = os.path.join(BASE_DIR, 'uploads/handwriting/models/')
+HANDWRITING_MODELS_DIR = os.path.join(BASE_DIR, 'models/handwriting/')
+MMDET_CONFIG = os.path.join(BASE_DIR, 'models/mmdet_answerscript/full_config.py')
+MMDET_CHECKPOINT = os.path.join(BASE_DIR, 'models/mmdet_answerscript/epoch_12.pth')
 
+AWS_SESSION = boto3.Session(profile_name='textract')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -68,6 +71,7 @@ INSTALLED_APPS = [
     'django_q',
     'api.jobs',
     'storages',
+    'api.utils',
 ]
 
 LOGGING = {
@@ -239,7 +243,5 @@ if USE_S3:
     MEDIA_URL = AWS_URL + '/media/'
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     print('using s3')
-else:
-    print('not using s3')
-    print(os.getenv('USE_S3'))
+
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

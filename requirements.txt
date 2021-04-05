@@ -52,16 +52,12 @@ rsa==4.7.2
 s3transfer==0.3.6
 six==1.15.0
 sqlparse==0.4.1
-# tb-nightly==2.5.0a20210228
 tensorboard==2.4.1
 tensorboard-data-server==0.3.0
 tensorboard-plugin-wit==1.8.0
 tensorflow-cpu==2.4.1
 tensorflow-estimator==2.4.0
-# tensorflow-gpu==2.4.1
 termcolor==1.1.0
-# tf-estimator-nightly==2.5.0.dev2021022801
-# tf-nightly==2.5.0.dev20210228
 typing-extensions==3.7.4.3
 uritemplate==3.0.1
 urllib3==1.26.2

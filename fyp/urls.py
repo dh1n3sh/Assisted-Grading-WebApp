@@ -44,4 +44,3 @@ urlpatterns = [
     
 ] + static('/segmented_images/', document_root='segmented_images')
 urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
-
