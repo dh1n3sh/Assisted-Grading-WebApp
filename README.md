@@ -1,7 +1,9 @@
 # fyp_webapp
 pip install -r requirements.txt   
 export MOCK_GRADE_TREE=TRUE   
-./manage.py loaddata media/fixtures/dump.json   
+
+./manage.py flush   
+./manage.py loaddata media/fixtures/dump.json    
 
 pip install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html --no-cache-dir   
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.8.0/index.html
