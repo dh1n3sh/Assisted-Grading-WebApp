@@ -151,5 +151,5 @@ def generate_grade_tree(answerscript_pdf, qp_tree_path, submission):
         str(submission.test.id), str(submission.id))
     if not os.path.exists(dest):
         os.makedirs(dest)
-    return json.dumps(buildGradeTree(answer_dict, dest),indent=2)
+    return json.dumps(buildGradeTree(answer_dict, dest) ,indent=2)
 
