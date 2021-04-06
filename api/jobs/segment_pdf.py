@@ -70,6 +70,8 @@ def generate_grade_tree(answerscript_pdf, qp_tree_path, submission):
     returns 
         stringified gradetree
     '''
+    if os.environ.get('MOCK_GRADE_TREE') == 'TRUE':
+        return open(os.path.join(settings.BASE_DIR,'media/fixtures/grade_tree.json'),'r').read()
     imagespath = os.path.join(settings.MEDIA_ROOT,'as_images',str(submission.test.course.id),
         str(submission.test.id), str(submission.id))
     convert_single_pdf_to_images(answerscript_pdf,imagespath)

@@ -76,6 +76,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     ip_dir = args.input_dir
     op_dir = args.output_dir
-    status = convert_pdfs_to_images(ip_dir, op_dir)
+    status = convert_batch_pdfs_to_images(ip_dir, op_dir)
     print("completed : ")
     print(json.dumps(status, indent=2))
