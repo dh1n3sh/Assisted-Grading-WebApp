@@ -11,7 +11,7 @@ from itertools import chain
 from django.views import View
 from django.views.generic import TemplateView
 from django.views.decorators.cache import never_cache
-from .serializers import ProfessorSerializer, CourseSerializer, TestSerializer, SubmissionSerializer, UserSerializer, StudentSerializer
+from .serializers import ProfessorSerializer, CourseSerializer, TestSerializer, SubmissionSerializer, UserSerializer, StudentSerializer, GradeTreeSerializer
 from .models import Course, Professor, Test, Submission, Student
 import sys
 from api.jobs.test_create_job import make_submissions
@@ -288,5 +288,17 @@ class Marksheet(View):
         response['Content-Disposition'] = 'attachment; filename="{}_{}_marksheet.csv"'.format(test.course.name,test.name)
 
         return response
+
+
+class GradeTreeView (viewsets.ModelViewSet):
+
+    # http_method_names = ['post']
+    # Try updating to include other parameters for filtering tests
+
+    serializer_class = GradeTreeSerializer
+    queryset = Submission.objects.all()
+
+# class GradeTree(View):
+#     def put(self, request)
 # def index(request):
 #     return HttpResponse("Hello, world. You're at the api index.")
