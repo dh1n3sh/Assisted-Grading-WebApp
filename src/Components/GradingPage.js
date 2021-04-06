@@ -50,12 +50,22 @@ class GradingPage extends Component{
         let marks = data[2];
         let marksGiven = data[1];
         let imageUrl;
-        if(data[3] && data[3].length)  
-          imageUrl = data[3][0];
+        if(data[3] && data[3].length)  {
+          imageUrl=  data[3].map(x => { return {original: x,thumbnail:x }})
+          // imageUrl = data[3];
+
+        }
         // else 
         //   imageUrl = "https://static.toiimg.com/photo/msid-67586673/67586673.jpg?3918697"
 
         // console.log(imageUrl)
+         const images = [
+           {
+             original: 'https://picsum.photos/id/1018/1000/600/',
+             thumbnail: 'https://picsum.photos/id/1018/1000/600/',
+           }
+         ];
+
         this.setState({
           isSubQuestionVisible : isSubQuestionVisible,
           currQno : currQno,
@@ -76,8 +86,7 @@ class GradingPage extends Component{
             console.log(res.data['5'][3])
             if(res.status < 300 && res.status > 199){
               this.setState({
-                test : {'QpPattern' : res.data},
-                imageUrl : res.data['5'][3]
+                test : {'QpPattern' : res.data}
               })
             }
           })
@@ -208,9 +217,9 @@ class GradingPage extends Component{
           <div>
             <MyJumbotron state={this.state.dashboardstate} history={this.props.history} dontRenderButton={true} goBack={this.goBack}/>
             <div className="App">
-                <SectionComponent width="15%" heading="questions" data={this.state.test} handleMarkState ={this.handleMarkState} />
-                <SectionComponent width="15%" heading="segments" data={this.state.segments} />
-                <SectionComponent width="50%" heading="answer scripts" data={this.state.imageUrl}/>
+                <SectionComponent width="20%" heading="questions" data={this.state.test} handleMarkState ={this.handleMarkState} />
+                {/* <SectionComponent width="15%" heading="segments" data={this.state.segments} />*/}
+                <SectionComponent width="60%" heading="answer scripts" data={this.state.imageUrl}/>
                 {/* imaged need above  */}
                 <SectionComponent width="20%" heading="marks allocation" data="dummy"
                                   isSubQuestionVisible={this.state.isSubQuestionVisible}

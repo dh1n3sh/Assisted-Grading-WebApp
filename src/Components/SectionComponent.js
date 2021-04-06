@@ -4,7 +4,8 @@ import { Button } from "reactstrap"
 import ImgsViewer from "react-images-viewer"
 import QuestionButton from "./QuestionButton"
 import MarksComponent from "./MarksComponent"
-
+import ImageGallery from 'react-image-gallery';
+import "./image-gallery.css";
 export default class SectionComponent extends Component {
 
     constructor(props) {
@@ -25,7 +26,9 @@ export default class SectionComponent extends Component {
             marksGiven : props.marksGiven,
             test : props.test,
             enterRemarks : props.enterRemarks,
-            finishEval : props.finishEval
+            finishEval : props.finishEval,
+            currImg: 0
+
         }
 
         this.renderButton = this.renderButton.bind(this);
@@ -35,6 +38,8 @@ export default class SectionComponent extends Component {
         this.getValue = this.getValue.bind(this);
         this.defaultvalue = null;
 
+        this.imageNext = this.imageNext.bind(this);
+        this.imagePrev = this.imagePrev.bind(this);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -111,7 +116,37 @@ export default class SectionComponent extends Component {
         return (<Button className="sectionbtn" color="secondary" key={segment} >{segment}</Button>)
     }
 
+    imageNext(x){
+        this.setState(
+
+            (prevState) =>{
+                return {currImg: prevState.currImg+1}
+            }    
+        )
+    }
+
+    imagePrev(x){
+        this.setState(
+            (prevState) =>{
+                return {currImg: prevState.currImg-1}
+            }    
+        )
+    }
     renderSectionElements() {
+        const images = [
+          {
+            original: 'https://picsum.photos/id/1018/1000/600/',
+            thumbnail: 'https://picsum.photos/id/1018/1000/600/',
+          },
+          {
+            original: 'https://picsum.photos/id/1015/1000/600/',
+            thumbnail: 'https://picsum.photos/id/1015/250/150/',
+          },
+          {
+            original: 'https://picsum.photos/id/1019/1000/600/',
+            thumbnail: 'https://picsum.photos/id/1019/250/150/',
+          },
+        ];
 
         this.defaultvalue = this.getDefaultValue();
 
@@ -123,21 +158,30 @@ export default class SectionComponent extends Component {
             case "questions":
                 return this.renderQuestionButton()
             case "answer scripts":
+                {console.log("helooooo  ", this.state.data )}
+                     return this.state.data ? <div style={{height:"100px", marginLeft:"auto", marginRight:"auto"}}><ImageGallery items={this.state.data} showPlayButton={false} /></div> : null
                 return <div>
-                    <img
-                        onClick={() => { this.setState({ photoIsOpen: true }) }}
-                        src={this.state.data}
-                        height="100%"
-                        width="100%"
-                    />
-                    <ImgsViewer
-                        imgs={[{ src: this.state.data }]}
-                        currImg={this.state.currImg}
-                        isOpen={this.state.photoIsOpen}
-                        onClose={() => { this.setState({ photoIsOpen: false }) }}
-                        showThumbnails={true}
-                        backdropCloseable={true}
-                    />
+
+                    {/* <img */}
+                    {/*     onClick={() => { this.setState({ photoIsOpen: true }) }} */}
+                    {/*     src={this.state.data[this.state.currImg]} */}
+                    {/*     height="100%" */}
+                    {/*     width="100%" */}
+                    {/* /> */}
+                    {/* <Button onClick={this.imageNext}>Right</Button> */}
+                    {/* <Button onClick={this.imagePrev}>Left</Button> */}
+                    {/*  */}
+                    {/* <ImgsViewer */}
+                    {/*     imgs={[{ src: "/segmented_images/2.jpg" },{ src: "/segmented_images/2.jpg" }]} */}
+                    {/*     currImg={this.state.currImg} */}
+                    {/*     isOpen={this.state.photoIsOpen} */}
+                    {/*     onClose={() => { this.setState({ photoIsOpen: false }) }} */}
+                    {/*     showThumbnails={true} */}
+                    {/*     backdropCloseable={true} */}
+                    {/*     onClickNext={this.imageNext} */}
+                    {/*     onClickPrev={this.imagePrev} */}
+                    {/*     photoIsOpen={true} */}
+                    {/* /> */}
                 </div>
             case "marks allocation":
 

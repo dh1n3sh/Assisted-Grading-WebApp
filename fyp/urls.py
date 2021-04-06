@@ -31,6 +31,7 @@ router.register(r'signup', views.SignupView, 'signup')
 router.register(r'submissions', views.SubmissionView, 'submissions')
 router.register(r'me', views.MyProfessorView, 'me')
 router.register(r'student', views.StudentView, 'student')
+router.register(r'gradetree',views.GradeTreeView,'gradetree')
 # router.register(r'marksheet',views.Marksheet, 'marksheet')
 
 urlpatterns = [

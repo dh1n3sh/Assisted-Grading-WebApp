@@ -159,6 +159,10 @@ class DashboardPage extends Component {
 
     render() {
         console.log(this.state.data)
+        const capitalize = (s) => {
+            if (typeof s !== 'string') return ''
+            return s.charAt(0).toUpperCase() + s.slice(1)
+        }
         return (
             <div
                 aria-live="polite"
@@ -168,7 +172,18 @@ class DashboardPage extends Component {
                     minHeight: '100px',
                 }}>
                 <MyJumbotron state={this.state} history={this.props.history} goBack={this.goBack} addBtnHandler={this.addBtnHandler} dontRenderButton={this.state.curType == 2} />
-                <div className="dashboard">
+                
+
+                <h1 style={{marginLeft:"40px",marginTop:"20px"}}>
+                    {capitalize(this.state.availableTypes[this.state.curType])+" Dashboard"}
+                </h1><div className="dashboard">
+                    {console.log("curType is ",this.state.curType,this.state.selectedFields)}
+                    {this.state.curType==1&&
+                    <DashboardSectionComponent data={{name:"Download Marksheet"}}
+                        type={this.state.availableTypes[this.state.curType]}
+                        clickHandler={this.clickhandler} populateData={this.populateData}
+                        toastHandler={this.toastHandler}
+                    />}
                     {this.state.data.map((obj) => <DashboardSectionComponent data={obj}
                         type={this.state.availableTypes[this.state.curType]}
                         clickHandler={this.clickhandler} populateData={this.populateData}
