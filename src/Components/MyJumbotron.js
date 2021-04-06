@@ -44,7 +44,7 @@ class MyJumbotron extends Component {
                     > Add {capitalize(this.props.state.availableTypes[this.props.state.curType])}</Button>}
                         
                 </Nav>
-                {selectedType && <Navbar.Brand style={{marginRight: "43rem",  align:"center", weight:"bold"}}>{capitalize(selectedType)+" Dashboard"}</Navbar.Brand>}
+                {/*selectedType && <Navbar.Brand style={{marginRight: "43rem",  align:"center", weight:"bold"}}>{capitalize(selectedType)+" Dashboard"}</Navbar.Brand>*/}
 
 
                 {ReactSession.get('userdata') && <Navbar.Brand>{ReactSession.get('userdata')['name']}</Navbar.Brand>}
