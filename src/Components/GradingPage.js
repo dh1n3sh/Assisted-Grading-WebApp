@@ -5,6 +5,8 @@ import axios from './axiosConfig'
 // import image from "../Data/2_2.jpg";
 import MyJumbotron from "./MyJumbotron";
 import { withRouter } from "react-router-dom";
+import FormData from "form-data"
+import {Button} from "reactstrap"
 
 class GradingPage extends Component{
 
@@ -18,12 +20,17 @@ class GradingPage extends Component{
             isSubQuestionVisible : false,
             currQno : undefined,
             subQuestionMarks : undefined,
+            marksGiven : undefined,
             dashboardstate : this.props.location.state,
             imageUrl : undefined,
             data : this.props.location.data,
         }
         this.handleMarkState = this.handleMarkState.bind(this);
         this.goBack = this.goBack.bind(this);
+        this.enterMarks = this.enterMarks.bind(this);
+        this.changeObject = this.changeObject.bind(this);
+        this.enterRemarks = this.enterRemarks.bind(this);
+        this.finishEval = this.finishEval.bind(this);
         // this.getMarks = this.getMarks.bind(this);
       }
 
@@ -36,11 +43,12 @@ class GradingPage extends Component{
     
       handleMarkState(isSubQuestionVisible,currQno,data){
         // console.log(data);
-
         let path = currQno.split("-")
         path.shift();
         // let marks = this.getMarks(this.state.qptree,path);
+        // console.log(data)
         let marks = data[2];
+        let marksGiven = data[1];
         let imageUrl;
         if(data[3] && data[3].length)  
           imageUrl = data[3][0];
@@ -52,6 +60,7 @@ class GradingPage extends Component{
           isSubQuestionVisible : isSubQuestionVisible,
           currQno : currQno,
           subQuestionMarks : marks,
+          marksGiven : marksGiven,
           imageUrl : imageUrl
         });
       }
@@ -86,11 +95,115 @@ class GradingPage extends Component{
           });
         })
       }
+
+      
+      changeObject(obj,keylist,newvalue){
+        if(keylist.length === 0){
+          obj[1] = Number(newvalue)
+          return obj
+        }
+
+        let curkey = keylist[0]
+
+        keylist.shift()
+
+        obj[curkey] = this.changeObject(obj[curkey],keylist,newvalue)
+
+        return obj
+      }
+
+      // enterMarks(qStr,marks){
+
+      //   if(qStr === undefined) return
+
+      //   var newTest = JSON.parse(JSON.stringify(this.state.test));
+      //   let qlist = qStr.split("-")
+      //   qlist.shift()
+
+      //   newTest.QpPattern = this.changeObject(newTest.QpPattern,qlist,marks)
+
+      //   this.setState({
+      //     test : newTest
+      //   },()=>{window.alert("marks updated!")})
+      // }
+
+      changeObjectForRemarks(obj,keylist,newvalue){
+        if(keylist.length === 0){
+          obj[0] = newvalue
+          return obj
+        }
+
+        let curkey = keylist[0]
+
+        keylist.shift()
+
+        obj[curkey] = this.changeObjectForRemarks(obj[curkey],keylist,newvalue)
+
+        return obj
+      }
+
+
+      
+      enterMarks(event){
+
+        let qStr = event.target.name
+        let marks = event.target.value
+
+        if(qStr === undefined) return
+
+        var newTest = JSON.parse(JSON.stringify(this.state.test));
+        let qlist = qStr.split("-")
+        qlist.shift()
+
+        newTest.QpPattern = this.changeObject(newTest.QpPattern,qlist,marks)
+
+        this.setState({
+          test : newTest
+        })
+      }
+
+      enterRemarks(event){
+
+        let qStr = event.target.name
+        let remarks = event.target.value
+
+        if(qStr === undefined) return
+
+        var newTest = JSON.parse(JSON.stringify(this.state.test));
+        let qlist = qStr.split("-")
+        qlist.shift()
+
+        newTest.QpPattern = this.changeObjectForRemarks(newTest.QpPattern,qlist,remarks)
+
+        this.setState({
+          test : newTest
+        })
+      }
+
+      finishEval(){
+        let putdata = JSON.parse(JSON.stringify(this.state.dashboardstate.selectedFields[2]));
+        let grade_tree = JSON.parse(JSON.stringify(this.state.test.QpPattern))
+        putdata.grade_tree = grade_tree
+
+        let formData = new FormData();
+        // formData.append("hey","hello")
+        formData.append('id',putdata.id)
+        var gtree = JSON.stringify(grade_tree);
+        var gtBlob = new Blob([gtree], { type  : "application/json"});
+        formData.append('grade_tree' , gtBlob); 
+        // console.log(Array.from(formData.keys()))
+        axios.put('/api/gradetree/'+putdata.id+'/',formData)
+          .then((res)=>{
+            console.log(res)
+            window.alert("submission evalation updated !")
+          })
+      }
     
       render(){
         // "https://static.toiimg.com/photo/msid-67586673/67586673.jpg?3918697"
-        console.log(this.state.data)
-        console.log(this.state.imageUrl)
+        // console.log(this.state.data)
+        // console.log(this.state.imageUrl)
+        // console.log(this.state)
         return (
           <div>
             <MyJumbotron state={this.state.dashboardstate} history={this.props.history} dontRenderButton={true} goBack={this.goBack}/>
@@ -104,6 +217,11 @@ class GradingPage extends Component{
                                   currQno={this.state.currQno}
                                   subQuestionMarks={this.state.subQuestionMarks}
                                   handwritingVerified={this.state.data["handwriting_verified"]}
+                                  enterMarks = {this.enterMarks}
+                                  marksGiven = {this.state.marksGiven}
+                                  test = {this.state.test}
+                                  enterRemarks = {this.enterRemarks}
+                                  finishEval = {this.finishEval}
                                   />
             </div>
           </div>
