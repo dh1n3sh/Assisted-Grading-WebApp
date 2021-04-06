@@ -8,12 +8,15 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from itertools import chain
+from django.views import View
 from django.views.generic import TemplateView
 from django.views.decorators.cache import never_cache
 from .serializers import ProfessorSerializer, CourseSerializer, TestSerializer, SubmissionSerializer, UserSerializer, StudentSerializer
 from .models import Course, Professor, Test, Submission, Student
 import sys
 from api.jobs.test_create_job import make_submissions
+import csv
+from django.views.decorators.http import require_http_methods, require_GET
 def auth(user):
 
     if isinstance(user, AnonymousUser):
@@ -242,5 +245,48 @@ class StudentView(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
     queryset = Student.objects.all()
 
+from django.conf import settings
+import json
+from io import StringIO
+from django.core.files.base import ContentFile
+
+def total_grade(grade_tree):
+    if(isinstance(grade_tree,list)):
+        return grade_tree[1]
+    total = 0
+    for q in grade_tree:
+        total += total_grade(grade_tree[q])
+    return total
+
+
+class Marksheet(View):
+    def get(self,request):
+        # Create the HttpResponse object with the appropriate CSV header.
+        test = Test.objects.get(id=request.GET['test'])
+        submissions = Submission.objects.filter(id=test.id)
+        print(len(submissions),' submissions')
+        
+        csv_buffer = StringIO()
+        writer = csv.writer(csv_buffer)
+        writer.writerow(['Student', 'Marks'])
+        all_student_total = 0
+        for submission_object in submissions:
+            print(submission_object.grade_tree.path)
+            grade_tree = json.loads(open(submission_object.grade_tree.path,'r').read())
+            total =total_grade(grade_tree)
+            print(total)
+            writer.writerow([submission_object.name, total])
+            all_student_total += total
+        avg = all_student_total/len(submissions)
+        writer.writerow(["Average",avg])
+        # print(submissions[0].grade_tree.path)
+        # print(test, request.GET, submissions)
+        test.consolidated_marksheet.save("{}_{}_marksheet.csv".format(test.course.name,test.name),
+            ContentFile(csv_buffer.getvalue()))       
+
+        response = HttpResponse(csv_buffer.getvalue(),content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="{}_{}_marksheet.csv"'.format(test.course.name,test.name)
+
+        return response
 # def index(request):
 #     return HttpResponse("Hello, world. You're at the api index.")

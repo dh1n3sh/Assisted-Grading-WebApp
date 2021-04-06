@@ -2,13 +2,13 @@
     "1": {
         "a": [
             "sample remarks",
-            0,
+            6,
             10,
             ["/segmented_images/1_a.jpg","/segmented_images/1_a.jpg","/segmented_images/1_a.jpg"]
         ],
         "b": [
             "sample remarks",
-            0,
+            4,
             10,
             ["/segmented_images/1_b.jpg","/segmented_images/1_b.jpg"]
         ]

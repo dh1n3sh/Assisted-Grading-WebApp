@@ -37,6 +37,8 @@ def crop_questions(answer_dict, q = ''):
 def buildGradeTree(answer_dict, dest, q = ''): 
     
     if isinstance(answer_dict, list):
+        if(len(answer_dict)==0):
+            return []
         i = 0
         child = ["",0,0,[]]
         for image_obj in answer_dict:
@@ -58,7 +60,9 @@ def buildGradeTree(answer_dict, dest, q = ''):
 
     subDict = {}
     for q_k in answer_dict:
-        subDict[q_k] = buildGradeTree(answer_dict[q_k],dest, q+q_k)  
+        sub = buildGradeTree(answer_dict[q_k],dest, q+q_k)
+        if len(sub)!=0:
+            subDict[q_k] = sub
 
     return subDict
     
