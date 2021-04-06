@@ -12,7 +12,7 @@ class CourseSerializer(serializers.ModelSerializer):
 class TestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Test
-        fields = ('id', 'name', 'date', 'qp_tree', 'answer_scripts', 'course')
+        fields = ('id', 'name', 'date', 'qp_tree', 'answer_scripts', 'course','consolidated_marksheet')
 
 
 class UserSerializer(serializers.ModelSerializer):

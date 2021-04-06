@@ -2,55 +2,48 @@
     "1": {
         "a": [
             "sample remarks",
-            0,
+            6,
             10,
-            "/segmented_images/1_a.jpg",
-            "/uploads/processed_images/1237651/"
+            ["/segmented_images/1_a.jpg","/segmented_images/1_a.jpg","/segmented_images/1_a.jpg"]
         ],
         "b": [
             "sample remarks",
-            0,
+            4,
             10,
-            "/segmented_images/1_b.jpg",
-            "/uploads/processed_images/1237651/"
+            ["/segmented_images/1_b.jpg","/segmented_images/1_b.jpg"]
         ]
     },
     "2": [
         "sample remarks",
         0,
         20,
-        "/segmented_images/2.jpg",
-        "/uploads/processed_images/9812/"
+        ["/segmented_images/2.jpg","/segmented_images/2.jpg","/segmented_images/2.jpg"]
     ],
     "5":{
         "a" : [
             "sample remarks",
             0,
             10,
-            "/segmented_images/5_a.jpg",
-            "/uploads/processed_images/4342/"
+            ["/segmented_images/5_a.jpg"]
         ],
         "b" : [
             "sample remarks",
             0,
             10,
-            "/segmented_images/5_b.jpg",
-            "/uploads/processed_images/4342/"
+            ["/segmented_images/5_b.jpg"]
         ],
         "c" :  {
             "i": [
                 "sample remarks",
                 0,
                 5,
-                "/segmented_images/5_c_i.jpg",
-                "/uploads/processed_images/4342/"
+                ["/segmented_images/5_c_i.jpg"]
             ],
             "ii": [
                 "sample remarks",
                 0,
                 5,
-                "/segmented_images/5_c_ii.jpg",
-                "/uploads/processed_images/6712/"
+                ["/segmented_images/5_c_ii.jpg"]
             ]
         }
     }

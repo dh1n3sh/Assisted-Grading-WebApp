@@ -31,6 +31,7 @@ router.register(r'signup', views.SignupView, 'signup')
 router.register(r'submissions', views.SubmissionView, 'submissions')
 router.register(r'me', views.MyProfessorView, 'me')
 router.register(r'student', views.StudentView, 'student')
+# router.register(r'marksheet',views.Marksheet, 'marksheet')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,6 +40,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),
     path('', views.index, name='index'),
+    path('api/marksheet/',views.Marksheet.as_view())
     # path('', RedirectView.as_view(
     #     url='api/', permanent=False), name='index'),
     

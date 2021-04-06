@@ -29,16 +29,6 @@
         }
     },
     {
-        "model": "api.course",
-        "pk": 3,
-        "fields": {
-            "professor": 1,
-            "name": "dpsd",
-            "offering_dept": "BME",
-            "course_id": "CS 6610"
-        }
-    },
-    {
         "model": "api.test",
         "pk": 1,
         "fields": {
@@ -54,7 +44,7 @@
         "model": "api.test",
         "pk": 2,
         "fields": {
-            "course": 1,
+            "course": 2,
             "name": "UT3",
             "date": "2222-02-02",
             "consolidated_marksheet": "",
@@ -69,42 +59,6 @@
             "course": 1,
             "name": "Final",
             "date": "2200-02-02",
-            "consolidated_marksheet": "",
-            "qp_tree": "fixtures/qp_tree.json",
-            "answer_scripts": "fixtures/blank.zip"
-        }
-    },
-    {
-        "model": "api.test",
-        "pk": 4,
-        "fields": {
-            "course": 2,
-            "name": "UT2",
-            "date": "2020-02-02",
-            "consolidated_marksheet": "",
-            "qp_tree": "fixtures/qp_tree.json",
-            "answer_scripts": "fixtures/blank.zip"
-        }
-    },
-    {
-        "model": "api.test",
-        "pk": 5,
-        "fields": {
-            "course": 3,
-            "name": "dpsd test",
-            "date": "0002-03-02",
-            "consolidated_marksheet": "",
-            "qp_tree": "fixtures/qp_tree.json",
-            "answer_scripts": "fixtures/blank.zip"
-        }
-    },
-    {
-        "model": "api.test",
-        "pk": 10,
-        "fields": {
-            "course": 3,
-            "name": "asd",
-            "date": "0002-02-22",
             "consolidated_marksheet": "",
             "qp_tree": "fixtures/qp_tree.json",
             "answer_scripts": "fixtures/blank.zip"
@@ -138,19 +92,7 @@
         "model": "api.submission",
         "pk": 3,
         "fields": {
-            "test": 4,
-            "name": "312217104002",
-            "answerscript_pdf": "fixtures/blank.pdf",
-            "submission_time": "0002-02-02T02:02:00Z",
-            "status": 2,
-            "grade_tree": "fixtures/grade_tree.json"
-        }
-    },
-    {
-        "model": "api.submission",
-        "pk": 4,
-        "fields": {
-            "test": 1,
+            "test": 2,
             "name": "312217104003",
             "answerscript_pdf": "fixtures/blank.pdf",
             "submission_time": "2021-02-21T21:40:00Z",
@@ -160,37 +102,13 @@
     },
     {
         "model": "api.submission",
-        "pk": 5,
+        "pk": 4,
         "fields": {
-            "test": 1,
+            "test": 3,
             "name": "312217104004",
             "answerscript_pdf": "fixtures/blank.pdf",
             "submission_time": "2021-02-21T21:40:00Z",
             "status": 1,
-            "grade_tree": "fixtures/grade_tree.json"
-        }
-    },
-    {
-        "model": "api.submission",
-        "pk": 6,
-        "fields": {
-            "test": 10,
-            "name": "312217104005",
-            "answerscript_pdf": "fixtures/blank.pdf",
-            "submission_time": null,
-            "status": 0,
-            "grade_tree": "fixtures/grade_tree.json"
-        }
-    },
-    {
-        "model": "api.submission",
-        "pk": 7,
-        "fields": {
-            "test": 10,
-            "name": "312217104006",
-            "answerscript_pdf": "fixtures/blank.pdf",
-            "submission_time": null,
-            "status": 0,
             "grade_tree": "fixtures/grade_tree.json"
         }
     },
