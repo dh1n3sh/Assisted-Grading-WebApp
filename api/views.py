@@ -12,9 +12,7 @@ from django.views.generic import TemplateView
 from django.views.decorators.cache import never_cache
 from .serializers import ProfessorSerializer, CourseSerializer, TestSerializer, SubmissionSerializer, UserSerializer, StudentSerializer
 from .models import Course, Professor, Test, Submission, Student
-
 import sys
-
 from api.jobs.test_create_job import make_submissions
 def auth(user):
 

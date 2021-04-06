@@ -41,7 +41,12 @@ class GradingPage extends Component{
         path.shift();
         // let marks = this.getMarks(this.state.qptree,path);
         let marks = data[2];
-        let imageUrl = data[3];
+        let imageUrl;
+        if(data[3] && data[3].length)  
+          imageUrl = data[3][0];
+        // else 
+        //   imageUrl = "https://static.toiimg.com/photo/msid-67586673/67586673.jpg?3918697"
+
         // console.log(imageUrl)
         this.setState({
           isSubQuestionVisible : isSubQuestionVisible,
@@ -56,10 +61,14 @@ class GradingPage extends Component{
         // console.log(this.state.data)
         axios.get(this.state.data.grade_tree)
           .then(res=>{
-            // console.log(res)
+            console.log('res')
+            console.log(res.data)
+            console.log(typeof(res.data))
+            console.log(res.data['5'][3])
             if(res.status < 300 && res.status > 199){
               this.setState({
-                test : {'QpPattern' : res.data}
+                test : {'QpPattern' : res.data},
+                imageUrl : res.data['5'][3]
               })
             }
           })
@@ -81,6 +90,7 @@ class GradingPage extends Component{
       render(){
         // "https://static.toiimg.com/photo/msid-67586673/67586673.jpg?3918697"
         console.log(this.state.data)
+        console.log(this.state.imageUrl)
         return (
           <div>
             <MyJumbotron state={this.state.dashboardstate} history={this.props.history} dontRenderButton={true} goBack={this.goBack}/>
