@@ -277,8 +277,8 @@ class Marksheet(View):
             print(total)
             writer.writerow([submission_object.name, total])
             all_student_total += total
-        avg = all_student_total/len(submissions)
-        writer.writerow(["Average",avg])
+        # avg = all_student_total/len(submissions)
+        # writer.writerow(["Average",avg])
         # print(submissions[0].grade_tree.path)
         # print(test, request.GET, submissions)
         test.consolidated_marksheet.save("{}_{}_marksheet.csv".format(test.course.name,test.name),

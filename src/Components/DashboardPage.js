@@ -6,6 +6,7 @@ import DashboardSectionComponent from "./DashboardSectionComponent";
 import axios from "./axiosConfig";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Form, Input } from "reactstrap";
 import { Toast } from 'react-bootstrap'
+import { Card} from 'react-bootstrap'
 
 import FormData from "form-data";
 
@@ -55,6 +56,7 @@ class DashboardPage extends Component {
         this.addBtnHandler = this.addBtnHandler.bind(this);
         this.addCourseBtn = this.addCourseBtn.bind(this);
         this.toastHandler = this.toastHandler.bind(this);
+        this.downloadMarksheet = this.downloadMarksheet.bind(this);
     }
 
     toastHandler(data) {
@@ -157,12 +159,46 @@ class DashboardPage extends Component {
             });
     }
 
+    downloadMarksheet(){
+        
+        axios.get('/api/marksheet' , {
+            params: {
+                test:2
+            }
+        })
+            .then(res => {
+
+                const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
+
+                const link = document.createElement('a');
+
+                link.href = downloadUrl;
+                let headerLine = res.headers['content-disposition'];
+                let startFileNameIndex = headerLine.indexOf('"') + 1
+                let endFileNameIndex = headerLine.lastIndexOf('"');
+                let filename = headerLine.substring(startFileNameIndex, endFileNameIndex);
+
+                link.setAttribute('download', filename); //any other extension
+
+                document.body.appendChild(link);
+
+                link.click();
+
+                link.remove();
+
+                
+                console.log(res);
+            })
+
+    }
+
     render() {
         console.log(this.state.data)
         const capitalize = (s) => {
             if (typeof s !== 'string') return ''
             return s.charAt(0).toUpperCase() + s.slice(1)
         }
+        let variant = 'dark'
         return (
             <div
                 aria-live="polite"
@@ -176,14 +212,39 @@ class DashboardPage extends Component {
 
                 <h1 style={{marginLeft:"40px",marginTop:"20px"}}>
                     {capitalize(this.state.availableTypes[this.state.curType])+" Dashboard"}
-                </h1><div className="dashboard">
+                </h1>
+                <div className="dashboard">
                     {console.log("curType is ",this.state.curType,this.state.selectedFields)}
                     {this.state.curType==1&&
-                    <DashboardSectionComponent data={{name:"Download Marksheet"}}
-                        type={this.state.availableTypes[this.state.curType]}
-                        clickHandler={this.clickhandler} populateData={this.populateData}
-                        toastHandler={this.toastHandler}
-                    />}
+                        <div onClick={this.downloadMarksheet}>
+                        <Card bg={variant.toLowerCase()}
+                text={variant.toLowerCase() === 'light' ? 'dark' : 'white'}
+                // style={{ width: '10rem', height : '10rem' , margin : '3rem', lineHeight : '10rem'}}
+                style={{ width: '13rem', margin: '2rem', borderRadius: '20px', height: '5rem' }}>
+
+                <Card.Img style={{ position: "relative" }} variant="top" className="img-card img-card-small" />
+                
+
+                <Card.Body style={{ borderRadius: '5px' }}>
+                    <Card.Text style={{
+                        fontSize: '1rem',
+                        fontWeight: 'normal',
+                        fontStretch: 'normal',
+                        fontStyle: 'normal',
+                        lineHeight: '7rem',
+                        letterSpacing: 'normal',
+                        textAlign: 'center'
+                    }}>
+                        Download Marksheet
+                    </Card.Text>
+                </Card.Body>
+            </Card></div>
+                    // <DashboardSectionComponent data={{name:"Download Marksheet"}}
+                    //     type={this.state.availableTypes[this.state.curType]}
+                    //     clickHandler={this.downloadMarksheet} populateData={this.populateData}
+                    //     toastHandler={this.toastHandler}
+                    // />
+                    }
                     {this.state.data.map((obj) => <DashboardSectionComponent data={obj}
                         type={this.state.availableTypes[this.state.curType]}
                         clickHandler={this.clickhandler} populateData={this.populateData}
