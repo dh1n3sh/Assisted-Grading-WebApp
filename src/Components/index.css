@@ -64,3 +64,11 @@ div.sectionButtonPanel{
     right: 50%;
     transform: translate(-50%, -50%);
   }
+
+  .icon-down-tag {
+    position: absolute;
+    top: 50%;
+    right: 4%;
+    transform: translate(-50%, -50%);
+    filter:invert(100) contrast(100)
+  }

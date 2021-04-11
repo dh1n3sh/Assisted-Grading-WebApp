@@ -7,9 +7,9 @@ import axios from "./axiosConfig";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Form, Input } from "reactstrap";
 import { Toast } from 'react-bootstrap'
 import { Card} from 'react-bootstrap'
-
+import "./index.css"
 import FormData from "form-data";
-
+import dw_icon from "./download_icon.png" 
 class DashboardPage extends Component {
 
     constructor(props) {
@@ -163,7 +163,7 @@ class DashboardPage extends Component {
         
         axios.get('/api/marksheet' , {
             params: {
-                test:2
+                test:this.state.selectedFields[this.state.curType-1].id
             }
         })
             .then(res => {
@@ -215,28 +215,32 @@ class DashboardPage extends Component {
                 </h1>
                 <div className="dashboard">
                     {console.log("curType is ",this.state.curType,this.state.selectedFields)}
-                    {this.state.curType==1&&
-                        <div onClick={this.downloadMarksheet}>
+                    {this.state.curType==2&&
+                        <div onClick={this.downloadMarksheet} style={{position:"fixed",right:0,top:"50px"}}>
+                        
                         <Card bg={variant.toLowerCase()}
                 text={variant.toLowerCase() === 'light' ? 'dark' : 'white'}
                 // style={{ width: '10rem', height : '10rem' , margin : '3rem', lineHeight : '10rem'}}
-                style={{ width: '13rem', margin: '2rem', borderRadius: '20px', height: '5rem' }}>
+                style={{ width: '9rem', margin: '2rem', borderRadius: '10%', height: '3rem' }}>
 
                 <Card.Img style={{ position: "relative" }} variant="top" className="img-card img-card-small" />
                 
-
-                <Card.Body style={{ borderRadius: '5px' }}>
+                    <img src={dw_icon} 
+                        className="icon-down-tag" style={{marginLeft:"200px", height:"20px"}}></img>
+                
+                <Card.Body style={{ borderRadius: '0px' }}>
                     <Card.Text style={{
-                        fontSize: '1rem',
+                        fontSize: '1rem', 
                         fontWeight: 'normal',
                         fontStretch: 'normal',
                         fontStyle: 'normal',
-                        lineHeight: '7rem',
+                        lineHeight: '0.7rem',
                         letterSpacing: 'normal',
-                        textAlign: 'center'
+                        textAlign: 'left'
                     }}>
-                        Download Marksheet
+                        Marksheet
                     </Card.Text>
+
                 </Card.Body>
             </Card></div>
                     // <DashboardSectionComponent data={{name:"Download Marksheet"}}

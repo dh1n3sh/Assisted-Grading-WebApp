@@ -141,8 +141,8 @@ class AnswerTree:
   
   def constructSubtree (self, qpJsonDict, node): 
 
-    # if not isinstance(qpJsonDict, dict): 
-    #   return 
+    if not isinstance(qpJsonDict, dict): 
+      return 
 
     for key in  qpJsonDict.keys(): 
 

@@ -23,9 +23,9 @@
         "pk": 2,
         "fields": {
             "professor": 1,
-            "name": "TOC",
+            "name": "DPSD",
             "offering_dept": "CSE",
-            "course_id": "CS 6610"
+            "course_id": "CS 6710"
         }
     },
     {

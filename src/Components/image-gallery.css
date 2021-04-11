@@ -58,8 +58,8 @@
   transform: translateY(-50%); }
   .image-gallery-left-nav .image-gallery-svg,
   .image-gallery-right-nav .image-gallery-svg {
-    height: 120px;
-    width: 60px; }
+    height: 60px;
+    width: 30px; }
   @media (max-width: 768px) {
     .image-gallery-left-nav .image-gallery-svg,
     .image-gallery-right-nav .image-gallery-svg {

@@ -34,13 +34,13 @@ def crop_questions(answer_dict, q = ''):
     for q_k in answer_dict:
         crop_questions(answer_dict[q_k], q+q_k)
 
-def buildGradeTree(answer_dict, dest, q = ''): 
+def buildGradeTree(answer_dict, qp_tree_dict,dest, q = ''): 
     
     if isinstance(answer_dict, list):
         if(len(answer_dict)==0):
             return []
         i = 0
-        child = ["",0,0,[]]
+        child = ["",0,qp_tree_dict,[]]
         for image_obj in answer_dict:
             img = Image.open(image_obj[0])
             width, height = img.size 
@@ -60,7 +60,7 @@ def buildGradeTree(answer_dict, dest, q = ''):
 
     subDict = {}
     for q_k in answer_dict:
-        sub = buildGradeTree(answer_dict[q_k],dest, q+q_k)
+        sub = buildGradeTree(answer_dict[q_k],qp_tree_dict[q_k],dest, q+q_k)
         if len(sub)!=0:
             subDict[q_k] = sub
 
@@ -147,7 +147,9 @@ def generate_grade_tree(answerscript_pdf, qp_tree_path, submission):
     for box in boxes:
         print(box.ocr, box.xMin, box.yMin, box.pageNumber)
     grade_tree = {1: '2'}
-    answer = AnswerTree ({'1':{'a':{}, 'b':{}}, '3':{'a':{}, 'b':{}}, '4':{},'5':{}})
+    qp_tree_dict = json.loads(open(qp_tree_path,'r').read())
+    # answer = AnswerTree ({'1':{'a':{}, 'b':{}}, '3':{'a':{}, 'b':{}}, '4':{},'5':{}})
+    answer = AnswerTree(qp_tree_dict)
     answer.processAnswerScript (pages, boxes)
     answer.disp(answer.root)
     answer_dict = answer.buildDict(answer.root)
@@ -157,5 +159,5 @@ def generate_grade_tree(answerscript_pdf, qp_tree_path, submission):
         str(submission.test.id), str(submission.id))
     if not os.path.exists(dest):
         os.makedirs(dest)
-    return json.dumps(buildGradeTree(answer_dict, dest) ,indent=2)
+    return json.dumps(buildGradeTree(answer_dict, qp_tree_dict,dest) ,indent=2)
 

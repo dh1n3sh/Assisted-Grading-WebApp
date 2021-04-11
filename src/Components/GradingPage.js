@@ -83,7 +83,7 @@ class GradingPage extends Component{
             console.log('res')
             console.log(res.data)
             console.log(typeof(res.data))
-            console.log(res.data['5'][3])
+            // console.log(res.data['5'][3])
             if(res.status < 300 && res.status > 199){
               this.setState({
                 test : {'QpPattern' : res.data}

@@ -62,7 +62,7 @@ class TestCreationPage extends Component {
         this.handleDataChange = this.handleDataChange.bind(this);
         // this.checkAndPing = this.checkAndPing.bind(this);
         this.isEmpty = this.isEmpty.bind(this);
-
+        this.download_tree = this.download_tree.bind(this);
         // this.togglePopup = this.togglePopup.bind(this);
     }
 
@@ -88,16 +88,20 @@ class TestCreationPage extends Component {
 
         let finalQp = this.constructFinalQpTree(this.state.qp[0].children,"");
 
-        if(this.state.testname!=null && this.state.testdate!=null && this.state.zipfile != null && !this.isEmpty(finalQp)){
+
+        // if(this.state.testname!=null && this.state.testdate!=null && this.state.zipfile != null && !this.isEmpty(finalQp)){
+         if(this.state.testname!=null && this.state.testdate!=null && this.state.zipfile != null ){
                 
             // const qptree = Buffer.from(JSON.stringify(this.state.finalQp),'utf-8');
             var qpContent = JSON.stringify(finalQp);
-            var qpBlob = new Blob([qpContent], { type  : "application/json"});    
+            var qpBlob = new Blob([qpContent], { type  : "application/json"});   
+            console.log(qpBlob) 
             const formdata = new FormData();
 
             formdata.append('name' , document.getElementsByName('testname')[0].value);
             formdata.append('date' , document.getElementsByName('testdate')[0].value);
-            formdata.append('qp_tree' , qpBlob , this.state.testname+'_qp_tree.json');
+            // formdata.append('qp_tree' , qpBlob , this.state.testname+'_qp_tree.json');
+            formdata.append('qp_tree' , document.getElementsByName('qp_tree')[0].files[0]);
             formdata.append('answer_scripts' , document.getElementsByName('zipfile')[0].files[0]);
             formdata.append('course' , this.state.dashboardState.selectedFields[0].id);
 
@@ -123,6 +127,31 @@ class TestCreationPage extends Component {
         
     }
 
+    download_tree(){
+       let finalQp = this.constructFinalQpTree(this.state.qp[0].children,"");
+               var qpContent = JSON.stringify(finalQp);
+                var qpBlob = new Blob([qpContent], { type  : "application/json"});   
+                console.log(qpBlob,qpContent ) 
+
+                const downloadUrl = window.URL.createObjectURL(qpBlob);
+
+                const link = document.createElement('a');
+
+                link.href = downloadUrl;
+                
+
+                link.setAttribute('download', 'qp_tree.json'); //any other extension
+
+                document.body.appendChild(link);
+
+                link.click();
+
+                link.remove();
+
+                
+                // console.log(res);
+        
+    }
     constructFinalQpTree(tree , ancestor){
         let finalqp = {}
 
@@ -192,9 +221,30 @@ class TestCreationPage extends Component {
                     <FormGroup>
                         <Input name="testname" type="text" placeholder="Testname" required={true} value={this.state.testname} onChange={this.handleDataChange}/>
                         <Input name="testdate" type="date" placeholder="Test-date" required={true} value = {this.state.testdate} onChange={this.handleDataChange}/>
-                        {/* <Input type="number" placeholder="noOfQno" /> */}
+                        <label><strong>Upload Question Paper Json : </strong></label>
+                        <Input type="file" accept="application/json" name="qp_tree"/>
                     </FormGroup>
-                    <div style = {{ height : '30vh'}}>
+                   
+                    {/* <Modal isOpen = {this.state.popup} toggle = {this.togglePopup}>
+                        <ModalHeader toggle = {this.togglePopup}>
+                            Final Question Paper
+                        </ModalHeader>
+
+                        <ModalBody>
+                            <JSONViewer json={this.state.finalQp}/>
+                            <JSONTree data = {this.state.finalQp}/>
+                            <JSONPretty data={this.state.finalQp}/>
+                        </ModalBody>
+                        <ModalFooter>
+                            Question Paper structure can still be changed! Question paper structure generated last will be submitted when test is created.
+                        </ModalFooter>
+                    </Modal> */}
+                    <label><strong>Upload Submissions zip file : </strong></label>
+                    <Input type="file" name="zipfile" accept = '.zip,.rar' required = {true} value={this.state.zipfile} onChange={this.handleDataChange}/>
+                    <Button color="primary" onClick={this.createQp}>Create Test</Button>
+
+                </Form>
+                 <div style = {{ height : '30vh'}}>
                         <SortableTree
                             treeData={this.state.qp}
                             onChange={newQPTree => { this.setState({ newQPTree }); }}
@@ -250,25 +300,9 @@ class TestCreationPage extends Component {
                             })}
 
                         />
+                    <Button color="primary" onClick={this.download_tree}>Download QP Tree</Button>
                     </div>
-                    {/* <Modal isOpen = {this.state.popup} toggle = {this.togglePopup}>
-                        <ModalHeader toggle = {this.togglePopup}>
-                            Final Question Paper
-                        </ModalHeader>
 
-                        <ModalBody>
-                            <JSONViewer json={this.state.finalQp}/>
-                            <JSONTree data = {this.state.finalQp}/>
-                            <JSONPretty data={this.state.finalQp}/>
-                        </ModalBody>
-                        <ModalFooter>
-                            Question Paper structure can still be changed! Question paper structure generated last will be submitted when test is created.
-                        </ModalFooter>
-                    </Modal> */}
-                    <label>Upload Submissions zip file : </label>
-                    <Input type="file" name="zipfile" accept = '.zip,.rar' required = {true} value={this.state.zipfile} onChange={this.handleDataChange}/>
-                    <Button color="primary" onClick={this.createQp}>Create Test</Button>
-                </Form>
             </div>
             </div>
         );

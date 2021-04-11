@@ -252,30 +252,36 @@ from django.core.files.base import ContentFile
 
 def total_grade(grade_tree):
     if(isinstance(grade_tree,list)):
-        return grade_tree[1]
+        return grade_tree[1], grade_tree[0]
     total = 0
+    remarks = ""
     for q in grade_tree:
-        total += total_grade(grade_tree[q])
-    return total
+        t,r = total_grade(grade_tree[q])
+        total+=t
+        remarks+=r
+    return total, remarks
 
 
 class Marksheet(View):
     def get(self,request):
         # Create the HttpResponse object with the appropriate CSV header.
         test = Test.objects.get(id=request.GET['test'])
-        submissions = Submission.objects.filter(id=test.id)
+        submissions = Submission.objects.filter(test=test.id)
         print(len(submissions),' submissions')
-        
+            
         csv_buffer = StringIO()
         writer = csv.writer(csv_buffer)
-        writer.writerow(['Student', 'Marks'])
+        writer.writerow(['Student', 'Marks', 'Remarks'])
         all_student_total = 0
+        
         for submission_object in submissions:
             print(submission_object.grade_tree.path)
             grade_tree = json.loads(open(submission_object.grade_tree.path,'r').read())
-            total =total_grade(grade_tree)
+            total,remarks =total_grade(grade_tree)
             print(total)
-            writer.writerow([submission_object.name, total])
+            print(remarks)
+
+            writer.writerow([submission_object.name, total, remarks])
             all_student_total += total
         # avg = all_student_total/len(submissions)
         # writer.writerow(["Average",avg])

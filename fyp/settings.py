@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 HANDWRITING_MODELS_DIR = os.path.join(BASE_DIR, 'models/handwriting/')
 MMDET_CONFIG = os.path.join(BASE_DIR, 'models/mmdet_answerscript/full_config.py')
 MMDET_CHECKPOINT = os.path.join(BASE_DIR, 'models/mmdet_answerscript/epoch_12.pth')
-if os.environ.get('MOCK_GRADE_TREE') == 'TRUE':
+if not os.environ.get('MOCK_GRADE_TREE') == 'TRUE':
     AWS_SESSION = boto3.Session(profile_name='textract')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
