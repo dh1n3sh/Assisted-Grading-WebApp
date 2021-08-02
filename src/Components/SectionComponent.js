@@ -159,7 +159,10 @@ export default class SectionComponent extends Component {
                 return this.renderQuestionButton()
             case "answer scripts":
                 {console.log("helooooo  ", this.state.data )}
-                     return this.state.data ? <div style={{height:"100px", marginLeft:"auto", marginRight:"auto"}}><ImageGallery items={this.state.data} showPlayButton={false} /></div> : null
+                     return this.state.data ? <div 
+                                                style={{height:"100%", width : "90%", marginLeft:"auto", marginRight:"auto", borderLeftStyle:"groove",borderRightStyle:"groove"}}>
+                                                    <ImageGallery items={this.state.data} showPlayButton={false} />
+                                              </div> : null
                 return <div>
 
                     {/* <img */}
