@@ -32,6 +32,8 @@ class GradingPage extends Component{
         this.enterRemarks = this.enterRemarks.bind(this);
         this.finishEval = this.finishEval.bind(this);
         // this.getMarks = this.getMarks.bind(this);
+        this.setDefault = this.setDefault.bind(this);
+        this.getFirstChild = this.getFirstChild.bind(this);
       }
 
       // getMarks(tree,path){
@@ -41,6 +43,28 @@ class GradingPage extends Component{
       //   return this.getMarks(tree[path[0]],newPath);
       // }
     
+      setDefault(){
+        const firstChild = this.getFirstChild('Q',this.state.test.QpPattern);
+        const imgUrls = firstChild.node[3].map( url => { return { original : url , thumbnail : url }});
+        this.setState({
+          isSubQuestionVisible : true,
+          currQno : firstChild.currQno,
+          subQuestionMarks : firstChild.node[2],
+          marksGiven : firstChild.node[1],
+          imageUrl : imgUrls
+        });
+      }
+
+      getFirstChild(currQno,tree){
+
+        if(Array.isArray(tree)) return { currQno : currQno , node : tree };
+
+        const keyList = Object.keys(tree).sort();
+
+        return this.getFirstChild(currQno + '-' + keyList[0] , tree[keyList[0]]);
+      }
+
+
       handleMarkState(isSubQuestionVisible,currQno,data){
         // console.log(data);
         let path = currQno.split("-")
@@ -87,7 +111,7 @@ class GradingPage extends Component{
             if(res.status < 300 && res.status > 199){
               this.setState({
                 test : {'QpPattern' : res.data}
-              })
+              },()=>{this.setDefault();})
             }
           })
       }
