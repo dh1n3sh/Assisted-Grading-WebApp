@@ -213,9 +213,30 @@ class GradingPage extends Component{
         // console.log(this.state.data)
         // console.log(this.state.imageUrl)
         // console.log(this.state)
+        let nav_history = "";
+        this.state.dashboardstate.selectedFields.forEach(element => {
+            if (nav_history === "") nav_history += element.name
+            else nav_history += (" > " + element.name)
+        });
+        const capitalize = (s) => {
+          if (typeof s !== 'string') return ''
+          return s.charAt(0).toUpperCase() + s.slice(1)
+        }
         return (
           <div>
             <MyJumbotron state={this.state.dashboardstate} history={this.props.history} dontRenderButton={true} goBack={this.goBack}/>
+            {/* Start of screen info card */}
+            <div className = "info-card">
+                <div className = "info-card-title">
+                    { capitalize("Grading page") }
+                </div>
+                <div className = "info-card-nav">
+                    <div style={ { margin : '2vh' , lineHeight : '5vh' , height : '5vh'} }>
+                        {nav_history}
+                    </div>
+                </div>
+            </div>
+            {/* End of screen info card */}
             <div className="App">
                 <SectionComponent width="20%" heading="questions" data={this.state.test} handleMarkState ={this.handleMarkState} />
                 {/* <SectionComponent width="15%" heading="segments" data={this.state.segments} />*/}
