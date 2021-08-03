@@ -10,6 +10,7 @@ import FormData from 'form-data';
 // import JSONPretty from "react-json-pretty";
 import axios from './axiosConfig';
 // import {withRouter} from "react-router-dom";
+import checkIcon from '../Data/check.png';
 
 class TestCreationPage extends Component {
 
@@ -76,7 +77,16 @@ class TestCreationPage extends Component {
     isEmpty(obj){
         if(obj === undefined || obj === null) return true;
         let objKey = Object.keys(obj);
-        return objKey.length == 0;
+        if(objKey.length > 0 ){
+            let flag = false;
+            objKey.forEach((key)=>{
+                if(key === null || key === undefined || key === '' || key == 'null') {
+                    flag = true;
+                }
+            });
+            return flag;
+        }
+        return true;
     }
 
     handleDataChange(event){
@@ -259,7 +269,9 @@ class TestCreationPage extends Component {
                             <div>
                                 <div>
                                     <label><strong>Create/Edit Question Paper Structure :</strong></label><br/>
-                                    <Button color="primary" onClick={this.togglePopup}>Question Paper Structure</Button>
+                                    <Button color="primary" onClick={this.togglePopup}>Question Paper Structure</Button> 
+                                    {!this.isEmpty(this.constructFinalQpTree(this.state.qp[0].children,"")) &&
+                                        <img src={checkIcon} style={{ marginLeft : '5vh'}}></img>}
                                 </div>
                                 <div style = {{ width : '100%' , textAlign : 'center'}}>
                                     ( OR )

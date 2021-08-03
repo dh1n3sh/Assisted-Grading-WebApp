@@ -84,8 +84,9 @@ div.sectionButtonPanel{
     text-align: center;
     font-weight: bolder;
     font-size: x-large;
-    border-bottom: #007bff;
+    border-bottom:black;
     border-bottom-style: groove;
+    border-bottom-width: thin;
 }
 
 .info-card-nav {
