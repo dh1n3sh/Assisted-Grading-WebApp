@@ -26,6 +26,7 @@ class DashboardPage extends Component {
             availableTypes: ['course', 'test', 'submission'],
             selectedFields: [],
             data: [''],
+            filteredData : [''],
             popup: false,
             toasts: [],
 
@@ -38,6 +39,7 @@ class DashboardPage extends Component {
             this.state.curType = props.location.state.curType;
             this.state.selectedFields = props.location.state.selectedFields.map(x => x);
             this.state.data = props.location.state.data;
+            this.state.filteredData = props.location.state.data;
             // props.location.state = undefined;
             // this.setState({
             //     curType : newCurType,
@@ -57,6 +59,7 @@ class DashboardPage extends Component {
         this.addCourseBtn = this.addCourseBtn.bind(this);
         this.toastHandler = this.toastHandler.bind(this);
         this.downloadMarksheet = this.downloadMarksheet.bind(this);
+        this.filterResults = this.filterResults.bind(this);
     }
 
     toastHandler(data) {
@@ -72,6 +75,7 @@ class DashboardPage extends Component {
     }
 
     clickhandler(data) {
+        document.getElementById("searchFilterInput").value = "";
         this.setState((prevState) => {
             let newSelectedfields = prevState.selectedFields.map(x => x)
             newSelectedfields.push(data)
@@ -102,7 +106,7 @@ class DashboardPage extends Component {
             }
         })
             .then(res => {
-                this.setState({ data: res.data })
+                this.setState({ data: res.data , filteredData : res.data })
                 console.log(res.data);
             })
     }
@@ -111,6 +115,7 @@ class DashboardPage extends Component {
     }
 
     goBack() {
+        document.getElementById("searchFilterInput").value = "";
         this.setState((prevState) => {
             let newSelectedfields = prevState.selectedFields.map(x => x);
             newSelectedfields.pop()
@@ -192,6 +197,22 @@ class DashboardPage extends Component {
 
     }
 
+    filterResults(event){
+        const filterString = event.target.value;
+        const filterStringLen = filterString.length;
+        let filteredData = this.state.data
+                                    .filter((ele)=>{
+                                                if(ele.name.slice(0,filterStringLen).toLowerCase() === filterString.toLowerCase()) 
+                                                    return true;
+                                                return false;
+                                            });
+        
+        this.setState({
+            filteredData : filteredData
+        });
+
+    }
+
     render() {
         console.log(this.state.data)
         const capitalize = (s) => {
@@ -199,6 +220,11 @@ class DashboardPage extends Component {
             return s.charAt(0).toUpperCase() + s.slice(1)
         }
         let variant = 'dark'
+        let nav_history = "";
+        this.state.selectedFields.forEach(element => {
+            if (nav_history === "") nav_history += element.name
+            else nav_history += (" > " + element.name)
+        });
         return (
             <div
                 aria-live="polite"
@@ -209,61 +235,90 @@ class DashboardPage extends Component {
                 }}>
                 <MyJumbotron state={this.state} history={this.props.history} goBack={this.goBack} addBtnHandler={this.addBtnHandler} dontRenderButton={this.state.curType == 2} />
                 
+                {/* Start of screen info card */}
+                <div className = "info-card">
+                    <div className = "info-card-title">
+                        {this.state.availableTypes[this.state.curType]!= undefined && this.state.availableTypes[this.state.curType]!= null &&
+                            capitalize(this.state.availableTypes[this.state.curType])+" Dashboard"
+                        }
+                        {(this.state.availableTypes[this.state.curType]== undefined || this.state.availableTypes[this.state.curType]== null )&&
+                            capitalize("Grading page")
+                        }
+                    </div>
+                    <div className = "info-card-nav">
+                        <div style={ { margin : '2vh' , lineHeight : '5vh' , height : '5vh'} }>
+                            {nav_history}
+                        </div>
+                        <Input
+                            id = "searchFilterInput" 
+                            placeholder ={ 'Search ' + this.state.availableTypes[this.state.curType] } 
+                            style = {{ width : '50%'}}
+                            onChange = {this.filterResults}></Input>
+                        {this.state.curType==2&&
+                        <div>
+                                
+                            <div onClick={this.downloadMarksheet}>
+                                        
+                                <Card bg={variant.toLowerCase()}
+                                text={variant.toLowerCase() === 'light' ? 'dark' : 'white'}
+                                // style={{ width: '10rem', height : '10rem' , margin : '3rem', lineHeight : '10rem'}}
+                                style={{ width: '9rem', margin: '2vh' , borderRadius: '10%', height: '3rem' }}>
 
-                <h1 style={{marginLeft:"40px",marginTop:"20px"}}>
-                    {capitalize(this.state.availableTypes[this.state.curType])+" Dashboard"}
-                </h1>
+                                    <Card.Img style={{ position: "relative" }} variant="top" className="img-card img-card-small" />
+                                
+                                    <img src={dw_icon} 
+                                        className="icon-down-tag" style={{ height:"20px"}}></img>
+                                    
+                                    <Card.Body style={{ borderRadius: '0px' }}>
+                                        <Card.Text style={{
+                                            fontSize: '1rem', 
+                                            fontWeight: 'normal',
+                                            fontStretch: 'normal',
+                                            fontStyle: 'normal',
+                                            lineHeight: '0.7rem',
+                                            letterSpacing: 'normal',
+                                            textAlign: 'left'
+                                        }}>
+                                            Marksheet
+                                        </Card.Text>
+
+                                    </Card.Body>
+                                </Card>
+                            </div>
+                                    
+                        </div>
+                        }
+                        { this.state.curType !== 2 &&
+                        <div>
+                            { <Button
+                                variant="primary"
+                                onClick={this.addBtnHandler}
+                                style={{ margin : "2vh" }}
+                            > Add {capitalize(this.state.availableTypes[this.state.curType])}</Button>}
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                {/* End of screen info card */}
                 <div className="dashboard">
                     {console.log("curType is ",this.state.curType,this.state.selectedFields)}
-                    {this.state.curType==2&&
-                        <div onClick={this.downloadMarksheet} style={{position:"fixed",right:0,top:"50px"}}>
-                        
-                        <Card bg={variant.toLowerCase()}
-                text={variant.toLowerCase() === 'light' ? 'dark' : 'white'}
-                // style={{ width: '10rem', height : '10rem' , margin : '3rem', lineHeight : '10rem'}}
-                style={{ width: '9rem', margin: '2rem', borderRadius: '10%', height: '3rem' }}>
-
-                <Card.Img style={{ position: "relative" }} variant="top" className="img-card img-card-small" />
-                
-                    <img src={dw_icon} 
-                        className="icon-down-tag" style={{marginLeft:"200px", height:"20px"}}></img>
-                
-                <Card.Body style={{ borderRadius: '0px' }}>
-                    <Card.Text style={{
-                        fontSize: '1rem', 
-                        fontWeight: 'normal',
-                        fontStretch: 'normal',
-                        fontStyle: 'normal',
-                        lineHeight: '0.7rem',
-                        letterSpacing: 'normal',
-                        textAlign: 'left'
-                    }}>
-                        Marksheet
-                    </Card.Text>
-
-                </Card.Body>
-            </Card></div>
-                    // <DashboardSectionComponent data={{name:"Download Marksheet"}}
-                    //     type={this.state.availableTypes[this.state.curType]}
-                    //     clickHandler={this.downloadMarksheet} populateData={this.populateData}
-                    //     toastHandler={this.toastHandler}
-                    // />
-                    }
-                    {this.state.data.map((obj) => <DashboardSectionComponent data={obj}
+                    
+                    {this.state.filteredData.map((obj) => <DashboardSectionComponent data={obj}
                         type={this.state.availableTypes[this.state.curType]}
                         clickHandler={this.clickhandler} populateData={this.populateData}
                         toastHandler={this.toastHandler}
                     />)}
                 </div>
-                <Modal isOpen={this.state.popup}>
+                <Modal isOpen={this.state.popup} centered={true}>
                     <ModalHeader>
                         Add a new Course
                         </ModalHeader>
                     <ModalBody>
-                        <Form id="courseForm">
-                            <Input type="text" name="course_id" placeholder="Course ID" />
-                            <Input type="text" name="name" placeholder="Course Name" />
-                            <Input type="text" name="offering_dept" placeholder="Department Offering" />
+                        <Form id="courseForm" style={{ height : '50%'}}>
+                            <Input type="text" name="course_id" placeholder="Course ID" style={{ marginTop : '5vh'}}/>
+                            <Input type="text" name="name" placeholder="Course Name" style={{ marginTop : '5vh'}}/>
+                            <Input type="text" name="offering_dept" placeholder="Department Offering" style={{ marginTop : '5vh' , marginBottom : '5vh'}}/>
                         </Form>
                     </ModalBody>
                     <ModalFooter>
@@ -275,7 +330,7 @@ class DashboardPage extends Component {
                     style={{
                         position: 'absolute',
                         top: "5rem",
-                                right: "2rem",
+                        right: "2rem",
                     }}>
                     {
 

@@ -19,7 +19,7 @@ class MyJumbotron extends Component {
         let nav_history = "";
         this.props.state.selectedFields.forEach(element => {
             if (nav_history === "") nav_history += element.name
-            else nav_history += (" - " + element.name)
+            else nav_history += (" > " + element.name)
         });
         let selectedType = this.props.state.availableTypes[this.props.state.curType]
         // if (nav_history === "") nav_history = "Home"
@@ -35,13 +35,12 @@ class MyJumbotron extends Component {
                     > Back </Button>
                 }
 
-                <Navbar.Brand>{nav_history}</Navbar.Brand>
                 <Nav className="mr-auto">
-                    {this.props.dontRenderButton != true && <Button
+                    {/* {this.props.dontRenderButton != true && <Button
                         variant="primary"
                         onClick={this.props.addBtnHandler}
                         style={{ marginLeft: "10px" }}
-                    > Add {capitalize(this.props.state.availableTypes[this.props.state.curType])}</Button>}
+                    > Add {capitalize(this.props.state.availableTypes[this.props.state.curType])}</Button>} */}
                         
                 </Nav>
                 {/*selectedType && <Navbar.Brand style={{marginRight: "43rem",  align:"center", weight:"bold"}}>{capitalize(selectedType)+" Dashboard"}</Navbar.Brand>*/}
