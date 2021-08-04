@@ -42,8 +42,7 @@ USE_S3 = os.getenv('USE_S3') == 'TRUE'
 # AWS_S3_REGION_NAME = 'us-east-2'
 # AWS_S3_SIGNATURE_VERSION = 's3v4'
 # ALLOWED_HOSTS = ["*"]
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'assisted-grading.herokuapp.com',
-    'f1d2d3712e2a.ngrok.io']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'assisted-grading.herokuapp.com',]
 # CORS_ORIGIN_ALLOW_ALL = True
 # CORS_ALLOW_ALL_ORIGINS = True
 # Application definition
@@ -53,7 +52,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     'Access-Control-Allow-Origin',
 ]
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000","https://f1d2d3712e2a.ngrok.io","https://dhinesh.ml"
+    "http://localhost:3000"
 ]
 CORS_ALLOW_CREDENTIALS = True
 INSTALLED_APPS = [

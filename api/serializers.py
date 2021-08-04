@@ -47,4 +47,4 @@ class GradeTreeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Submission
-        fields = ('id','grade_tree')
+        fields = ('id','grade_tree','status')

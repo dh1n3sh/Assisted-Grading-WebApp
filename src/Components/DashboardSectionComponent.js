@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from "./axiosConfig";
 import { Card, Toast } from 'react-bootstrap'
 import "./index.css"
+import checkIcon from '../Data/check.png';
 
 
 export default class DashboardSectionComponent extends Component {
@@ -43,7 +44,7 @@ export default class DashboardSectionComponent extends Component {
             .then((res) => {
                 // console.log(res);
                 if (res.status < 300 && res.status > 199) {
-                    this.state.toastHandler(["Deleted",capitalize(this.state.type), this.state.data.id.toString()]);
+                    this.state.toastHandler(["Deleted",capitalize(this.state.type), this.state.data.name.toString()]);
                     this.state.populateData();
                     // window.alert(this.state.type + ' deleted !');
                     
@@ -75,6 +76,7 @@ export default class DashboardSectionComponent extends Component {
 
         // </Card>;
         let variant = 'dark'
+        console.log(this.state)
         return <div onClick={(e) => { this.state.clickHandler(this.state.data) }}>
             <Card bg={variant.toLowerCase()}
                 text={variant.toLowerCase() === 'light' ? 'dark' : 'white'}
@@ -88,7 +90,14 @@ export default class DashboardSectionComponent extends Component {
                         className="icon-tag"
                         onClick={this.deleteBtn} />
                 </div>
-
+                {this.state.type === "submission" &&  this.state.data.status === 3 &&                
+                    <div className="blue-circle-icon">
+                        <img src={checkIcon}
+                            alt="live-icon"
+                            className="badge-tag"
+                            onClick={this.deleteBtn} />
+                    </div>
+                }
                 <Card.Body style={{ borderRadius: '5px' }}>
                     <Card.Text style={{
                         fontSize: '1rem',

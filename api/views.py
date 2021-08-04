@@ -171,7 +171,7 @@ class SubmissionView (viewsets.ModelViewSet):
         except:
             raise Http404()
 
-        q_set = Submission.objects.filter(test=request.GET['test'])
+        q_set = Submission.objects.filter(test=request.GET['test']).order_by('status')
         serialized = SubmissionSerializer(q_set, many=True)
         return Response(serialized.data)
 

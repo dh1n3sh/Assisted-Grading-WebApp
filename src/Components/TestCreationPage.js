@@ -126,7 +126,7 @@ class TestCreationPage extends Component {
                     // console.log(res);
                     if(res.status==200){
                         window.alert('Test created !');
-                        this.props.history.push('/'); 
+                        this.props.history.push({pathname : '/',state : this.state.dashboardState}); 
                     }
                     else{
                         window.alert("" + res.status + res.statusText);
@@ -299,7 +299,7 @@ class TestCreationPage extends Component {
                         </ModalHeader>
 
                         <ModalBody>
-                            <div style = {{ height : '60vh' , width : '50vw'}}>
+                            <div style = {{ height : '60vh' , width : '100%'}}>
                                 <SortableTree
                                     treeData={this.state.qp}
                                     onChange={newQPTree => { this.setState({ newQPTree }); }}

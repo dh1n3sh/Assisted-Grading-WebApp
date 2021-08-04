@@ -224,6 +224,7 @@ class GradingPage extends Component{
         var gtree = JSON.stringify(grade_tree);
         var gtBlob = new Blob([gtree], { type  : "application/json"});
         formData.append('grade_tree' , gtBlob, 'grade_tree.json');
+        formData.append('status', 3);
         // console.log(Array.from(formData.keys()))
         axios.put('/api/gradetree/'+putdata.id+'/',formData)
           .then((res)=>{

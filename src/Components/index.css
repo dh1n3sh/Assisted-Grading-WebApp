@@ -62,6 +62,13 @@ div.sectionButtonPanel{
     right: 50%;
     transform: translate(-50%, -50%);
   }
+  .badge-tag {
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    height: 2.5vh;
+    transform: translate(-200%, -50%);
+  }
 
   .icon-down-tag {
     position: absolute;

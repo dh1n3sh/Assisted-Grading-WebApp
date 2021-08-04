@@ -28,7 +28,7 @@ class DashboardPage extends Component {
             data: [''],
             filteredData : [''],
             popup: false,
-            toasts: [],
+            toasts: []
 
         }
 
@@ -194,7 +194,6 @@ class DashboardPage extends Component {
                 
                 console.log(res);
             })
-
     }
 
     filterResults(event){
@@ -355,7 +354,7 @@ class DashboardPage extends Component {
                                 <strong className="mr-auto">{obj[0] + " " + obj[1]}</strong>
                                 {/* <small>11 mins ago</small> */}
                             </Toast.Header>
-                            <Toast.Body style={{ paddingLeft: "1.5rem" }}>{obj[1] + " ID : " + obj[2]}</Toast.Body>
+                            <Toast.Body style={{ paddingLeft: "1.5rem" }}>{obj[1] + " : " + obj[2]}</Toast.Body>
                         </Toast>)}
                 </div>
             </div>
