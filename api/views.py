@@ -205,11 +205,6 @@ class UserLoginView(viewsets.ModelViewSet):
     queryset = User.objects.all()
 
     def create(self, request):
-        print("--------------------------------")
-        print("post request received!")
-        print(request.data)
-
-        print("-------------------------------")
         user = authenticate(username=request.data.get(
             'username'), password=request.data.get('password'))
         if user is not None:
@@ -231,15 +226,8 @@ class MyProfessorView(viewsets.ModelViewSet):
     def list(self, request, pk=None):
 
         profLoggedIn = auth(request.user)
-        # print(profLoggedIn)
-        # matches = Course.objects.filter (
-        #     professor = profLoggedIn,
-        # )
-
-        # course = get_object_or_404(matches, pk=pk)
         serializer = ProfessorSerializer(profLoggedIn)
         return Response(serializer.data)
-        # return profLoggedIn
 
 class StudentView(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
@@ -267,7 +255,6 @@ class Marksheet(View):
         # Create the HttpResponse object with the appropriate CSV header.
         test = Test.objects.get(id=request.GET['test'])
         submissions = Submission.objects.filter(test=test.id)
-        print(len(submissions),' submissions')
             
         csv_buffer = StringIO()
         writer = csv.writer(csv_buffer)
@@ -275,18 +262,12 @@ class Marksheet(View):
         all_student_total = 0
         
         for submission_object in submissions:
-            print(submission_object.grade_tree.path)
             grade_tree = json.loads(open(submission_object.grade_tree.path,'r').read())
             total,remarks =total_grade(grade_tree)
-            print(total)
-            print(remarks)
 
             writer.writerow([submission_object.name, total, remarks])
             all_student_total += total
-        # avg = all_student_total/len(submissions)
-        # writer.writerow(["Average",avg])
-        # print(submissions[0].grade_tree.path)
-        # print(test, request.GET, submissions)
+
         test.consolidated_marksheet.save("{}_{}_marksheet.csv".format(test.course.name,test.name),
             ContentFile(csv_buffer.getvalue()))       
 

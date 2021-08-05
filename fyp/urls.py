@@ -36,8 +36,6 @@ router.register(r'gradetree',views.GradeTreeView,'gradetree')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('api/', include('api.urls')),
-    path('grading/', include('assisted_grading.urls')),
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),
     path('', views.index, name='index'),

@@ -18,8 +18,7 @@ import boto3
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 HANDWRITING_MODELS_DIR = os.path.join(BASE_DIR, 'models/handwriting/')
-MMDET_CONFIG = os.path.join(BASE_DIR, 'models/mmdet_answerscript/full_config.py')
-MMDET_CHECKPOINT = os.path.join(BASE_DIR, 'models/mmdet_answerscript/epoch_12.pth')
+
 if not os.environ.get('MOCK_GRADE_TREE') == 'TRUE':
     AWS_SESSION = boto3.Session(profile_name='textract')
 # Quick-start development settings - unsuitable for production
@@ -39,12 +38,8 @@ AWS_URL = os.environ.get('AWS_URL')
 AWS_DEFAULT_ACL = None
 USE_S3 = os.getenv('USE_S3') == 'TRUE'
 
-# AWS_S3_REGION_NAME = 'us-east-2'
-# AWS_S3_SIGNATURE_VERSION = 's3v4'
-# ALLOWED_HOSTS = ["*"]
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'assisted-grading.herokuapp.com',]
-# CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ALLOW_ALL_ORIGINS = True
+
 # Application definition
 from corsheaders.defaults import default_headers
 
@@ -57,7 +52,6 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 INSTALLED_APPS = [
     'api.apps.ApiConfig',
-    'assisted_grading.apps.AssistedGradingConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -241,6 +235,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 if USE_S3:
     MEDIA_URL = AWS_URL + '/media/'
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    print('using s3')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
